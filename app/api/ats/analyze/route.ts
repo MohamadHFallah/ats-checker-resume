@@ -2,7 +2,6 @@ import { ChatOpenAI } from "@langchain/openai";
 import { ResumeSchema } from "../../../lib/ai/resumeSchema";
 import { ResumeAnalysisSchema } from "@/app/lib/ai/resumeAnalysisSchema";
 import { atsAnalysisSchema } from "@/app/lib/ai/atsAnalysisSchema";
-import { observeOpenAI } from "@langfuse/openai";
 import { CallbackHandler } from "@langfuse/langchain";
 
 const model = new ChatOpenAI({ model: "gpt-4.1-mini" })
