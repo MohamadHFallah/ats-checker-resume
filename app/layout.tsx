@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Figtree } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import { auth } from "./lib/auth";
+import { auth } from "../lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { Header } from "./components/Header";

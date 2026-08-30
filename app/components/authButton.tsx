@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { auth } from "../lib/auth";
+import { auth } from "../../lib/auth";
 
 export type Session = typeof auth.$Infer.Session;
 

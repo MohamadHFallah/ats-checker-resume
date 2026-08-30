@@ -5,7 +5,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { Menu, X, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { authClient, useSession } from '../lib/auth-client'
+import { authClient, useSession } from '../../lib/auth-client'
 import { signOut } from 'better-auth/api'
 
 export function Header() {
