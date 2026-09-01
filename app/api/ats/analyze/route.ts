@@ -3,6 +3,7 @@ import { ResumeSchema } from "../../../../lib/ai/resumeSchema";
 import { ResumeAnalysisSchema } from "@/lib/ai/resumeAnalysisSchema";
 import { atsAnalysisSchema } from "@/lib/ai/atsAnalysisSchema";
 import { CallbackHandler } from "@langfuse/langchain";
+import prisma from "@/lib/prisma";
 
 const model = new ChatOpenAI({ model: "gpt-4.1-mini" })
 
@@ -18,6 +19,8 @@ export async function POST(req: Request) {
 
   console.log('jobDescription ', jobDescription,);
 
+
+
   if (!content) {
     return new Response("can not load content", {
       status: 201,
@@ -25,6 +28,19 @@ export async function POST(req: Request) {
     });
   }
 
+
+
+  await prisma.resume.create({
+    data: {
+      // atsData:content,
+      content,
+      userId:"1"
+    }
+  });
+
+  return ;
+
+  
   try {
     console.log('String resume checker');
     const structuredLLM = model.withStructuredOutput(ResumeSchema)
