@@ -185,3 +185,6 @@ Prioritize a small, reliable product over many AI features. Use the LLM for lang
  
 Do not introduce autonomous agents, vector databases, embeddings, RAG, queues, or microservices without a demonstrated requirement. When in doubt, choose the simplest secure, correct, maintainable solution.
  
+
+
+Please read DESIGN.md file if you want to work on UI

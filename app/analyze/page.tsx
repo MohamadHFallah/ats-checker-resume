@@ -1,14 +1,7 @@
 "use client";
 
-import {
-  Avatar,
-  Badge,
-  Button,
-  Card,
-  Chip,
-} from "@heroui/react";
 import { useEffect } from "react";
-import ATSChecker from "../components/ATSCheckerCom";
+import { ATSChecker } from "../components/ATSCheckerCom";
 
 type AtsIssue = {
   issue: string;
