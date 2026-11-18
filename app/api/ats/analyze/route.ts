@@ -4,6 +4,10 @@ import { ResumeAnalysisSchema } from "@/lib/ai/resumeAnalysisSchema";
 import { atsAnalysisSchema } from "@/lib/ai/atsAnalysisSchema";
 import { CallbackHandler } from "@langfuse/langchain";
 import prisma from "@/lib/prisma";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { NextResponse } from "next/dist/server/web/spec-extension/response";
+import { requireApiAuth } from "@/lib/auth/getApiSession";
 
 const model = new ChatOpenAI({ model: "gpt-4.1-mini" })
 
@@ -14,6 +18,20 @@ const langfuseHandler = new CallbackHandler({
 });
 
 export async function POST(req: Request) {
+
+  const session = await requireApiAuth();
+
+  if (!session) {
+    return NextResponse.json(
+      {
+        error: "Unauthorized",
+      },
+      {
+        status: 401,
+      }
+    );
+  }
+
   const body = await req.json();
   const { content, jobDescription } = body
 
@@ -30,17 +48,17 @@ export async function POST(req: Request) {
 
 
 
-  await prisma.resume.create({
-    data: {
-      // atsData:content,
-      content,
-      userId:"1"
-    }
-  });
+  // await prisma.resume.create({
+  //   data: {
+  //     // atsData:content,
+  //     content,
+  //     userId:"1"
+  //   }
+  // });
 
-  return ;
+  return;
 
-  
+
   try {
     console.log('String resume checker');
     const structuredLLM = model.withStructuredOutput(ResumeSchema)
