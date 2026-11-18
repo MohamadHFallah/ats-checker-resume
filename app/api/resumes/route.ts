@@ -7,7 +7,6 @@ export async function GET() {
   if (!session) {
     return NextResponse.json({ error: "Sign in to view your saved resumes." }, { status: 401 });
   }
-console.log('sddddddddddddddddddddddddddddddddddddd');
 
   try {
     const resumes = await prisma.resume.findMany({
