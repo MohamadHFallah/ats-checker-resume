@@ -22,9 +22,24 @@ model User {
   updatedAt     DateTime
   sessions      Session[]
   accounts      Account[]
+  resumes       Resume[]
 
   @@unique([email])
   @@map("user")
+}
+
+model Resume {
+  id          String   @id @default(cuid())
+  title       String
+  content     String   @db.Text
+  analysis    Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, updatedAt])
+  @@map("resume")
 }
 
 model Session {

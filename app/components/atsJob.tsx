@@ -151,7 +151,7 @@ const getPriorityBadge = (priority: string) => {
 };
 
 // Main Component
-const ATSResultDashboard: FC<{ data: ATSJobDescriptionResult }> = ({ data  }) => {
+export const ATSJobDescriptionResult: FC<{ data: ATSJobDescriptionResult }> = ({ data  }) => {
   const { 
     matchedSkills, 
     missingSkills, 
@@ -406,4 +406,4 @@ const BriefcaseIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-export default ATSResultDashboard;
+export default ATSJobDescriptionResult;

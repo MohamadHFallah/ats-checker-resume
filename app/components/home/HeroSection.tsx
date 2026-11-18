@@ -10,7 +10,6 @@ const MAX_CHARACTERS = 20_000;
 export function HeroSection() {
   const router = useRouter();
   const [resumeText, setResumeText] = useState("");
-  const [jobDescription, setJobDescription] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
@@ -18,8 +17,8 @@ export function HeroSection() {
     event.preventDefault();
     setError(null);
 
-    if (!resumeText.trim() || !jobDescription.trim()) {
-      setError("Add both your resume and the job description to continue.");
+    if (resumeText.trim().length < 100) {
+      setError("Add at least 100 characters of resume text to continue.");
       return;
     }
 
@@ -28,16 +27,16 @@ export function HeroSection() {
       const response = await fetch("/api/ats/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content: resumeText, jobDescription }),
+        body: JSON.stringify({ content: resumeText }),
       });
 
       if (!response.ok) {
-        throw new Error("We couldn’t analyze those details. Check your text and try again.");
+        const responseBody = await response.json().catch(() => null) as { error?: string } | null;
+        throw new Error(responseBody?.error ?? "We couldn’t analyze your resume. Check your text and try again.");
       }
 
       const result = await response.json();
-      sessionStorage.setItem("ats-analysis", JSON.stringify(result));
-      router.push("/analyze");
+      router.push(`/dashboard?resume=${encodeURIComponent(result.resumeId)}`);
     } catch (analysisError) {
       setError(
         analysisError instanceof Error
@@ -55,12 +54,12 @@ export function HeroSection() {
           Resume compatibility checker
         </h1>
         <p className="mt-4 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
-          Compare your experience with a job description and get a clear, evidence-based review.
+          Paste your resume to get a structured review of its clarity, experience, and skills. Your analysis is saved to your dashboard.
         </p>
       </div>
 
       <form onSubmit={handleAnalyze} className="mt-9">
-        <div className="grid gap-5 md:grid-cols-2">
+        <div className="grid gap-5">
           <div className="min-w-0">
             <div className="mb-2 flex items-baseline justify-between gap-3">
               <label htmlFor="resume" className="text-sm font-medium">Your resume</label>
@@ -83,27 +82,6 @@ export function HeroSection() {
             </p>
           </div>
 
-          <div className="min-w-0">
-            <div className="mb-2 flex items-baseline justify-between gap-3">
-              <label htmlFor="job-description" className="text-sm font-medium">Job description</label>
-              <span className="text-xs tabular-nums text-muted-foreground">
-                {jobDescription.length.toLocaleString()} / {MAX_CHARACTERS.toLocaleString()}
-              </span>
-            </div>
-            <textarea
-              id="job-description"
-              value={jobDescription}
-              onChange={(event) => setJobDescription(event.target.value.slice(0, MAX_CHARACTERS))}
-              maxLength={MAX_CHARACTERS}
-              rows={14}
-              placeholder="Paste the job description here…"
-              aria-describedby="job-description-help"
-              className="min-h-64 w-full resize-y rounded-md border border-input bg-card px-4 py-3 text-sm leading-6 placeholder:text-muted-foreground/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            />
-            <p id="job-description-help" className="mt-2 text-xs leading-5 text-muted-foreground">
-              Use the full posting so the comparison can consider its requirements.
-            </p>
-          </div>
         </div>
 
         {error && (
@@ -134,7 +112,7 @@ export function HeroSection() {
         </div>
         {isAnalyzing && (
           <p role="status" className="mt-3 text-right text-sm text-muted-foreground">
-            Comparing your resume with the role. This may take a moment.
+            Reviewing your resume. This may take a moment.
           </p>
         )}
       </form>
