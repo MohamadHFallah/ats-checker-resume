@@ -12,7 +12,8 @@
     "prisma:prod": "prisma migrate deploy",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
-    "prisma:format": "prisma format"
+    "prisma:format": "prisma format",
+    "knip": "knip"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
@@ -44,15 +45,16 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",
-    "@types/node": "^20",
+    "@types/node": "^20.19.43",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "daisyui": "^5.7.16",
     "eslint": "^9",
     "eslint-config-next": "16.3.0",
+    "knip": "^6.45.1",
     "prisma": "^7.8.0",
     "tailwindcss": "^4.3.3",
-    "typescript": "^5"
+    "typescript": "^5.9.3"
   },
   "packageManager": "pnpm@11.5.0"
 }
