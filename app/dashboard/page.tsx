@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { ArrowRight, BriefcaseBusiness, FileText, LoaderCircle, Plus, X } from "lucide-react";
+import { ArrowRight, BriefcaseBusiness, ChevronLeft, ChevronRight, FileText, LoaderCircle, Plus, X } from "lucide-react";
 import { ATSChecker, type ATSResponse } from "@/app/components/ATSCheckerCom";
 import { ATSJobDescriptionResult } from "@/app/components/atsJob";
 
@@ -33,6 +33,7 @@ export default function DashboardPage() {
   const [jobDescription, setJobDescription] = useState("");
   const [comparisonError, setComparisonError] = useState<string | null>(null);
   const [isComparing, setIsComparing] = useState(false);
+  const [resumeSidebarOpen, setResumeSidebarOpen] = useState(true);
 
   useEffect(() => {
     let active = true;
@@ -109,7 +110,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <main className="mx-auto min-h-screen max-w-5xl px-4 pb-16 pt-24 sm:px-6 sm:pt-28">
+    <main className="mx-auto min-h-screen max-w-7xl px-4 pb-16 pt-24 sm:px-6 sm:pt-28">
       <header className="flex flex-col gap-4 border-b border-border pb-6 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-sm font-medium text-primary">Your workspace</p>
@@ -137,26 +138,45 @@ export default function DashboardPage() {
           </Link>
         </section>
       ) : (
-        <div className="mt-6 grid gap-6 lg:grid-cols-[220px_minmax(0,1fr)] xl:grid-cols-[220px_minmax(0,1fr)_320px]">
-          <aside className="min-w-0 border-b border-border pb-5 lg:border-b-0 lg:border-r lg:pr-5 lg:pb-0">
+        <div className={`mt-6 grid gap-6 ${resumeSidebarOpen ? "lg:grid-cols-[220px_minmax(0,1fr)] xl:grid-cols-[220px_minmax(0,1fr)_320px]" : "lg:grid-cols-[52px_minmax(0,1fr)] xl:grid-cols-[52px_minmax(0,1fr)_320px]"}`}>
+          <aside className={`min-w-0 border-b border-border pb-5 lg:border-b-0 lg:border-r lg:pr-3 lg:pb-0 ${resumeSidebarOpen ? "lg:pr-5" : "lg:pr-2"}`}>
+            <div className={`mb-3 flex items-center ${resumeSidebarOpen ? "justify-between" : "justify-center"}`}>
+              {resumeSidebarOpen && <h2 className="text-sm font-medium">Saved resumes</h2>}
+              <button
+                type="button"
+                onClick={() => setResumeSidebarOpen((open) => !open)}
+                aria-expanded={resumeSidebarOpen}
+                aria-label={resumeSidebarOpen ? "Collapse saved resumes sidebar" : "Expand saved resumes sidebar"}
+                className="inline-flex size-11 shrink-0 items-center justify-center rounded-md border border-border bg-card hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                {resumeSidebarOpen ? <ChevronLeft aria-hidden="true" className="size-4" /> : <ChevronRight aria-hidden="true" className="size-4" />}
+              </button>
+            </div>
             <nav aria-label="Saved resumes">
-              <h2 className="mb-3 text-sm font-medium">Saved resumes</h2>
-              <ul className="flex gap-2 overflow-x-auto pb-2 lg:flex-col lg:overflow-visible">
-              {resumes.map((resume) => (
-                <li key={resume.id} className="shrink-0 lg:w-full">
-                  <button
-                    type="button"
-                    onClick={() => selectResume(resume)}
-                    aria-current={selected?.id === resume.id ? "page" : undefined}
-                    className={`min-h-11 w-full rounded-md border px-3 py-2 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${selected?.id === resume.id ? "border-primary bg-accent" : "border-border bg-card hover:bg-muted"}`}
-                  >
-                    <span className="block max-w-[230px] truncate text-sm font-medium">{resume.title}</span>
-                    <span className="mt-1 block text-xs text-muted-foreground">
-                      {new Date(resume.createdAt).toLocaleDateString()}
-                    </span>
-                  </button>
-                </li>
-              ))}
+              <ul className={`flex gap-2 overflow-x-auto pb-2 lg:flex-col lg:overflow-visible ${resumeSidebarOpen ? "" : "lg:items-center"}`}>
+                {resumes.map((resume) => (
+                  <li key={resume.id} className="shrink-0 lg:w-full">
+                    <button
+                      type="button"
+                      onClick={() => selectResume(resume)}
+                      aria-current={selected?.id === resume.id ? "page" : undefined}
+                      aria-label={resumeSidebarOpen ? undefined : `${resume.title}, ${new Date(resume.createdAt).toLocaleDateString()}`}
+                      title={resumeSidebarOpen ? undefined : resume.title}
+                      className={`min-h-11 w-full rounded-md border text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${resumeSidebarOpen ? "px-3 py-2" : "flex items-center justify-center px-1 py-2"} ${selected?.id === resume.id ? "border-primary bg-accent" : "border-border bg-card hover:bg-muted"}`}
+                    >
+                      {resumeSidebarOpen ? (
+                        <>
+                          <span className="block max-w-[230px] truncate text-sm font-medium">{resume.title}</span>
+                          <span className="mt-1 block text-xs text-muted-foreground">
+                            {new Date(resume.createdAt).toLocaleDateString()}
+                          </span>
+                        </>
+                      ) : (
+                        <FileText aria-hidden="true" className="size-4" />
+                      )}
+                    </button>
+                  </li>
+                ))}
               </ul>
             </nav>
           </aside>
