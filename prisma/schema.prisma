@@ -37,9 +37,23 @@ model Resume {
   updatedAt   DateTime @updatedAt
   userId      String
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comparisons JobComparison[]
 
   @@index([userId, updatedAt])
   @@map("resume")
+}
+
+model JobComparison {
+  id             String   @id @default(cuid())
+  title          String
+  description    String   @db.Text
+  analysis       Json
+  createdAt      DateTime @default(now())
+  resumeId       String
+  resume         Resume   @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@index([resumeId, createdAt])
+  @@map("job_comparison")
 }
 
 model Session {

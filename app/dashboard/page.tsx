@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { ArrowRight, FileText, LoaderCircle, Plus } from "lucide-react";
+import { ArrowRight, FileText, LoaderCircle, Plus, BriefcaseBusiness } from "lucide-react";
 import { ATSChecker, type ATSResponse } from "@/app/components/ATSCheckerCom";
 import { ATSJobDescriptionResult } from "@/app/components/atsJob";
 
@@ -12,6 +12,14 @@ type SavedResume = {
   title: string;
   createdAt: string;
   analysis: ATSResponse | null;
+  comparisons: SavedComparison[];
+};
+
+type SavedComparison = {
+  id: string;
+  title: string;
+  createdAt: string;
+  analysis: ATSJobDescriptionResult;
 };
 
 export default function DashboardPage() {
@@ -19,8 +27,12 @@ export default function DashboardPage() {
   const requestedId = searchParams.get("resume");
   const [resumes, setResumes] = useState<SavedResume[]>([]);
   const [selected, setSelected] = useState<SavedResume | null>(null);
+  const [selectedComparison, setSelectedComparison] = useState<SavedComparison | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [jobDescription, setJobDescription] = useState("");
+  const [comparisonError, setComparisonError] = useState<string | null>(null);
+  const [isComparing, setIsComparing] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -32,11 +44,16 @@ export default function DashboardPage() {
           setError("Sign in to view your saved resumes.");
           return;
         }
-        if (!response.ok) throw new Error("Your resumes couldn’t be loaded. Please try again.");
+        if (!response.ok) {
+          const data = await response.json().catch(() => null) as { error?: string } | null;
+          throw new Error(data?.error ?? "Your resumes couldn’t be loaded. Please try again.");
+        }
         const data: { resumes: SavedResume[] } = await response.json();
         if (!active) return;
         setResumes(data.resumes);
-        setSelected(data.resumes.find((resume) => resume.id === requestedId) ?? data.resumes[0] ?? null);
+        const next = data.resumes.find((resume) => resume.id === requestedId) ?? data.resumes[0] ?? null;
+        setSelected(next);
+        setSelectedComparison(next?.comparisons.find((comparison) => comparison.id === searchParams.get("comparison")) ?? next?.comparisons[0] ?? null);
       } catch (loadError) {
         if (active) setError(loadError instanceof Error ? loadError.message : "Something went wrong.");
       } finally {
@@ -45,7 +62,41 @@ export default function DashboardPage() {
     }
     void loadResumes();
     return () => { active = false; };
-  }, [requestedId]);
+  }, [requestedId, searchParams]);
+
+  async function compareJobDescription(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!selected) return;
+    setComparisonError(null);
+    setIsComparing(true);
+    try {
+      const response = await fetch(`/api/resumes/${selected.id}/comparisons`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jobDescription }),
+      });
+      const data = await response.json() as { error?: string; comparison?: SavedComparison };
+      if (!response.ok || !data.comparison) {
+        throw new Error(data.error ?? "This job description couldn’t be compared.");
+      }
+      const comparison = data.comparison;
+      setSelectedComparison(comparison);
+      setJobDescription("");
+      setResumes((current) => current.map((resume) => resume.id === selected.id
+        ? { ...resume, comparisons: [comparison, ...resume.comparisons] }
+        : resume));
+    } catch (compareError) {
+      setComparisonError(compareError instanceof Error ? compareError.message : "Something went wrong.");
+    } finally {
+      setIsComparing(false);
+    }
+  }
+
+  function selectResume(resume: SavedResume) {
+    setSelected(resume);
+    setSelectedComparison(resume.comparisons[0] ?? null);
+    setComparisonError(null);
+  }
 
   if (loading) {
     return (
@@ -93,7 +144,7 @@ export default function DashboardPage() {
                 <li key={resume.id} className="shrink-0 lg:w-full">
                   <button
                     type="button"
-                    onClick={() => setSelected(resume)}
+                    onClick={() => selectResume(resume)}
                     aria-current={selected?.id === resume.id ? "page" : undefined}
                     className={`min-h-11 w-full rounded-md border px-3 py-2 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${selected?.id === resume.id ? "border-primary bg-accent" : "border-border bg-card hover:bg-muted"}`}
                   >
@@ -111,8 +162,49 @@ export default function DashboardPage() {
             {selected?.analysis ? (
               <>
                 <ATSChecker {...selected.analysis} />
-                {selected.analysis.jobDescResult && (
-                  <ATSJobDescriptionResult data={selected.analysis.jobDescResult as ATSJobDescriptionResult} />
+                <section className="mt-8 border-t border-border pt-6">
+                  <h2 className="text-2xl">Compare with a job</h2>
+                  <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                    Add a job description to see how this resume aligns. You can save multiple comparisons for the same resume.
+                  </p>
+                  <form className="mt-4" onSubmit={compareJobDescription}>
+                    <label htmlFor="job-description" className="mb-2 block text-sm font-medium">Job description</label>
+                    <textarea
+                      id="job-description"
+                      value={jobDescription}
+                      onChange={(event) => setJobDescription(event.target.value.slice(0, 20_000))}
+                      maxLength={20_000}
+                      rows={7}
+                      placeholder="Paste the job description here…"
+                      className="min-h-44 w-full resize-y rounded-md border border-input bg-card px-4 py-3 text-sm leading-6 placeholder:text-muted-foreground/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    />
+                    <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                      <span className="text-xs tabular-nums text-muted-foreground">{jobDescription.length.toLocaleString()} / 20,000 characters</span>
+                      <button type="submit" disabled={isComparing || jobDescription.trim().length < 80} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                        {isComparing ? <LoaderCircle aria-hidden="true" className="size-4 animate-spin" /> : <BriefcaseBusiness aria-hidden="true" className="size-4" />}
+                        {isComparing ? "Comparing…" : "Compare job description"}
+                      </button>
+                    </div>
+                    {comparisonError && <p role="alert" className="mt-3 rounded-md border border-danger-200 bg-danger-50 px-4 py-3 text-sm text-danger-800">{comparisonError}</p>}
+                    {isComparing && <p role="status" className="mt-3 text-sm text-muted-foreground">Reviewing the job requirements against this resume…</p>}
+                  </form>
+                </section>
+
+                {selected.comparisons.length > 0 && (
+                  <section className="mt-8 border-t border-border pt-6" aria-label="Saved job comparisons">
+                    <h2 className="text-2xl">Saved job comparisons</h2>
+                    <ul className="mt-4 flex gap-2 overflow-x-auto pb-2">
+                      {selected.comparisons.map((comparison) => (
+                        <li key={comparison.id} className="shrink-0">
+                          <button type="button" onClick={() => setSelectedComparison(comparison)} aria-current={selectedComparison?.id === comparison.id ? "page" : undefined} className={`min-h-11 max-w-64 rounded-md border px-3 py-2 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${selectedComparison?.id === comparison.id ? "border-primary bg-accent" : "border-border bg-card hover:bg-muted"}`}>
+                            <span className="block truncate text-sm font-medium">{comparison.title}</span>
+                            <span className="mt-1 block text-xs text-muted-foreground">{new Date(comparison.createdAt).toLocaleDateString()}</span>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                    {selectedComparison && <ATSJobDescriptionResult data={selectedComparison.analysis} />}
+                  </section>
                 )}
               </>
             ) : (

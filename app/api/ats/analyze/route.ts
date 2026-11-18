@@ -9,7 +9,7 @@ import { requireApiAuth } from "@/lib/auth/getApiSession";
 
 const inputSchema = z.object({
   content: z.string().trim().min(100, "Add at least 100 characters of resume text.").max(20_000),
-  jobDescription: z.string().trim().max(20_000).optional(),
+  jobDescription: z.string().trim().min(80).max(20_000).optional(),
 });
 
 const model = new ChatOpenAI({
