@@ -404,7 +404,7 @@ function Suggestions({ analyserResult }) {
     <Card className="border shadow-sm">
       <CardHeader className="px-6 pb-2 pt-6">
         <SectionHeader
-          title="Recommended Improvements"
+          title="Recommended Improvements1"
           count={analyserResult.suggestions.length}
         />
       </CardHeader>
