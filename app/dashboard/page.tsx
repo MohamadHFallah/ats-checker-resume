@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { ArrowRight, FileText, LoaderCircle, Plus, BriefcaseBusiness } from "lucide-react";
+import { ArrowRight, BriefcaseBusiness, FileText, LoaderCircle, Plus, X } from "lucide-react";
 import { ATSChecker, type ATSResponse } from "@/app/components/ATSCheckerCom";
 import { ATSJobDescriptionResult } from "@/app/components/atsJob";
 
@@ -112,8 +112,9 @@ export default function DashboardPage() {
     <main className="mx-auto min-h-screen max-w-5xl px-4 pb-16 pt-24 sm:px-6 sm:pt-28">
       <header className="flex flex-col gap-4 border-b border-border pb-6 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-3xl sm:text-4xl">Your resume dashboard</h1>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">Saved resumes and their latest analysis.</p>
+          <p className="text-sm font-medium text-primary">Your workspace</p>
+          <h1 className="mt-1 text-3xl sm:text-4xl">ATS Resume Checker</h1>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">Analyze and improve your resume, then compare it with a job.</p>
         </div>
         <Link href="/" className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:w-auto">
           <Plus aria-hidden="true" className="size-4" /> Add a resume
@@ -136,10 +137,11 @@ export default function DashboardPage() {
           </Link>
         </section>
       ) : (
-        <div className="mt-6 grid gap-8 lg:grid-cols-[240px_minmax(0,1fr)]">
-          <nav aria-label="Saved resumes" className="min-w-0">
-            <h2 className="mb-3 text-sm font-medium">Saved resumes</h2>
-            <ul className="flex gap-2 overflow-x-auto pb-2 lg:flex-col lg:overflow-visible">
+        <div className="mt-6 grid gap-6 lg:grid-cols-[220px_minmax(0,1fr)] xl:grid-cols-[220px_minmax(0,1fr)_320px]">
+          <aside className="min-w-0 border-b border-border pb-5 lg:border-b-0 lg:border-r lg:pr-5 lg:pb-0">
+            <nav aria-label="Saved resumes">
+              <h2 className="mb-3 text-sm font-medium">Saved resumes</h2>
+              <ul className="flex gap-2 overflow-x-auto pb-2 lg:flex-col lg:overflow-visible">
               {resumes.map((resume) => (
                 <li key={resume.id} className="shrink-0 lg:w-full">
                   <button
@@ -155,57 +157,18 @@ export default function DashboardPage() {
                   </button>
                 </li>
               ))}
-            </ul>
-          </nav>
+              </ul>
+            </nav>
+          </aside>
 
           <section aria-label="Selected resume analysis" className="min-w-0">
             {selected?.analysis ? (
               <>
+                <div className="mb-5">
+                  <h2 className="font-heading text-2xl">Analyze and improve your resume</h2>
+                  <p className="mt-1 text-sm text-muted-foreground">{selected.title}</p>
+                </div>
                 <ATSChecker {...selected.analysis} />
-                <section className="mt-8 border-t border-border pt-6">
-                  <h2 className="text-2xl">Compare with a job</h2>
-                  <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                    Add a job description to see how this resume aligns. You can save multiple comparisons for the same resume.
-                  </p>
-                  <form className="mt-4" onSubmit={compareJobDescription}>
-                    <label htmlFor="job-description" className="mb-2 block text-sm font-medium">Job description</label>
-                    <textarea
-                      id="job-description"
-                      value={jobDescription}
-                      onChange={(event) => setJobDescription(event.target.value.slice(0, 20_000))}
-                      maxLength={20_000}
-                      rows={7}
-                      placeholder="Paste the job description here…"
-                      className="min-h-44 w-full resize-y rounded-md border border-input bg-card px-4 py-3 text-sm leading-6 placeholder:text-muted-foreground/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                    />
-                    <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                      <span className="text-xs tabular-nums text-muted-foreground">{jobDescription.length.toLocaleString()} / 20,000 characters</span>
-                      <button type="submit" disabled={isComparing || jobDescription.trim().length < 80} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                        {isComparing ? <LoaderCircle aria-hidden="true" className="size-4 animate-spin" /> : <BriefcaseBusiness aria-hidden="true" className="size-4" />}
-                        {isComparing ? "Comparing…" : "Compare job description"}
-                      </button>
-                    </div>
-                    {comparisonError && <p role="alert" className="mt-3 rounded-md border border-danger-200 bg-danger-50 px-4 py-3 text-sm text-danger-800">{comparisonError}</p>}
-                    {isComparing && <p role="status" className="mt-3 text-sm text-muted-foreground">Reviewing the job requirements against this resume…</p>}
-                  </form>
-                </section>
-
-                {selected.comparisons.length > 0 && (
-                  <section className="mt-8 border-t border-border pt-6" aria-label="Saved job comparisons">
-                    <h2 className="text-2xl">Saved job comparisons</h2>
-                    <ul className="mt-4 flex gap-2 overflow-x-auto pb-2">
-                      {selected.comparisons.map((comparison) => (
-                        <li key={comparison.id} className="shrink-0">
-                          <button type="button" onClick={() => setSelectedComparison(comparison)} aria-current={selectedComparison?.id === comparison.id ? "page" : undefined} className={`min-h-11 max-w-64 rounded-md border px-3 py-2 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${selectedComparison?.id === comparison.id ? "border-primary bg-accent" : "border-border bg-card hover:bg-muted"}`}>
-                            <span className="block truncate text-sm font-medium">{comparison.title}</span>
-                            <span className="mt-1 block text-xs text-muted-foreground">{new Date(comparison.createdAt).toLocaleDateString()}</span>
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                    {selectedComparison && <ATSJobDescriptionResult data={selectedComparison.analysis} />}
-                  </section>
-                )}
               </>
             ) : (
               <p className="rounded-md border border-border bg-card p-5 text-sm text-muted-foreground">
@@ -213,7 +176,86 @@ export default function DashboardPage() {
               </p>
             )}
           </section>
+
+          <aside className="min-w-0 border-t border-border pt-5 xl:border-t-0 xl:border-l xl:pt-0 xl:pl-5" aria-label="Job comparison workspace">
+            <section>
+              <h2 className="font-heading text-2xl">Compare with a job</h2>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                Compare this resume with a job description. Each result stays with this resume.
+              </p>
+              {selected ? (
+                <form className="mt-4" onSubmit={compareJobDescription}>
+                  <label htmlFor="job-description" className="mb-2 block text-sm font-medium">Job description</label>
+                  <textarea
+                    id="job-description"
+                    value={jobDescription}
+                    onChange={(event) => setJobDescription(event.target.value.slice(0, 20_000))}
+                    maxLength={20_000}
+                    rows={6}
+                    placeholder="Paste the job description here…"
+                    className="min-h-36 w-full resize-y rounded-md border border-input bg-card px-4 py-3 text-sm leading-6 placeholder:text-muted-foreground/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  />
+                  <div className="mt-3">
+                    <span className="text-xs tabular-nums text-muted-foreground">{jobDescription.length.toLocaleString()} / 20,000 characters</span>
+                    <button type="submit" disabled={isComparing || jobDescription.trim().length < 80} className="mt-3 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                      {isComparing ? <LoaderCircle aria-hidden="true" className="size-4 animate-spin" /> : <BriefcaseBusiness aria-hidden="true" className="size-4" />}
+                      {isComparing ? "Comparing…" : "Compare job description"}
+                    </button>
+                  </div>
+                  {comparisonError && <p role="alert" className="mt-3 rounded-md border border-danger-200 bg-danger-50 px-4 py-3 text-sm text-danger-800">{comparisonError}</p>}
+                  {isComparing && <p role="status" className="mt-3 text-sm text-muted-foreground">Reviewing the job requirements against this resume…</p>}
+                </form>
+              ) : (
+                <p className="mt-4 rounded-md border border-border bg-card p-3 text-sm text-muted-foreground">Select a saved resume to compare it with a job.</p>
+              )}
+            </section>
+
+            <section className="mt-7 border-t border-border pt-5" aria-label="Saved job comparisons">
+              <h3 className="text-sm font-medium">Previous comparisons</h3>
+              {selected?.comparisons.length ? (
+                <ul className="mt-3 space-y-2">
+                  {selected.comparisons.map((comparison) => (
+                    <li key={comparison.id}>
+                      <button type="button" onClick={() => setSelectedComparison(comparison)} className="min-h-11 w-full rounded-md border border-border bg-card px-3 py-2 text-left hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                        <span className="block truncate text-sm font-medium">{comparison.title}</span>
+                        <span className="mt-1 block text-xs text-muted-foreground">{new Date(comparison.createdAt).toLocaleDateString()}</span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="mt-3 text-sm text-muted-foreground">No comparisons saved for this resume yet.</p>
+              )}
+            </section>
+          </aside>
         </div>
+      )}
+
+      {selectedComparison && (
+        <dialog
+          open
+          aria-labelledby="comparison-dialog-title"
+          onClick={(event) => {
+            if (event.target === event.currentTarget) setSelectedComparison(null);
+          }}
+          onKeyDown={(event) => {
+            if (event.key === "Escape") setSelectedComparison(null);
+          }}
+          className="fixed inset-0 z-50 m-auto max-h-[90dvh] w-[calc(100%-2rem)] max-w-3xl overflow-y-auto border border-border bg-background p-0 text-foreground backdrop:bg-foreground/40"
+        >
+          <div className="sticky top-0 flex items-start justify-between gap-4 border-b border-border bg-background px-5 py-4">
+            <div className="min-w-0">
+              <h2 id="comparison-dialog-title" className="font-heading text-2xl">{selectedComparison.title}</h2>
+              <p className="mt-1 text-sm text-muted-foreground">Compared on {new Date(selectedComparison.createdAt).toLocaleDateString()}</p>
+            </div>
+            <button type="button" autoFocus onClick={() => setSelectedComparison(null)} aria-label="Close comparison" className="inline-flex size-11 shrink-0 items-center justify-center rounded-md border border-border hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+              <X aria-hidden="true" className="size-4" />
+            </button>
+          </div>
+          <div className="px-5 py-5">
+            <ATSJobDescriptionResult data={selectedComparison.analysis} />
+          </div>
+        </dialog>
       )}
     </main>
   );
