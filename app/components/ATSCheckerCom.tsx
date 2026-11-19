@@ -225,8 +225,8 @@ function ScoreCard({ score }: { score: number }) {
   const percentage = score * 10;
 
   return (
-    <Card className="h-full border shadow-sm">
-      <CardContent className="flex h-full flex-col items-center justify-center px-6 py-8">
+    <Card className="px-6 pb-2 pt-6">
+      <CardContent className="flex flex-col items-center justify-center px-6 py-8">
         <div className="relative flex size-36 items-center justify-center rounded-full border-[10px] border-green-100 sm:size-40">
           <div className="text-center">
             <div className="text-5xl font-bold tracking-tight text-foreground">{score}</div>
@@ -253,7 +253,7 @@ function ScoreCard({ score }: { score: number }) {
 
 function OverviewCard({ analyserResult }: { analyserResult: AnalyzerResult }) {
   return (
-    <Card className="border shadow-sm">
+    <Card >
       <CardHeader className="px-6 pb-2 pt-6">
         <SectionHeader title="Resume Overview" />
       </CardHeader>
@@ -317,7 +317,7 @@ function OverviewCard({ analyserResult }: { analyserResult: AnalyzerResult }) {
 
 function AtsIssues({ analyserResult }: { analyserResult: AnalyzerResult }) {
   return (
-    <Card className="border shadow-sm">
+    <Card>
       <CardHeader className="px-6 pb-2 pt-6">
         <SectionHeader title="ATS Issues" count={analyserResult.atsIssues.length} />
       </CardHeader>
@@ -362,7 +362,7 @@ function AtsIssues({ analyserResult }: { analyserResult: AnalyzerResult }) {
 
 function Suggestions({ analyserResult }: { analyserResult: AnalyzerResult }) {
   return (
-    <Card className="border shadow-sm">
+    <Card>
       <CardHeader className="px-6 pb-2 pt-6">
         <SectionHeader
           title="Recommended Improvements1"
@@ -504,27 +504,9 @@ export function ATSChecker({
   analyserResult,
 }: Pick<ATSResponse, 'resumeResult' | 'analyserResult'>) {
   return (
-    <main className="min-h-screen bg-muted/30">
-      {/* Header */}
-      <header className="sticky top-0 z-30 border-b bg-background/90 backdrop-blur-md">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <div>
-            <h1 className="text-base font-bold tracking-tight sm:text-lg">ATS Resume Checker</h1>
+    <main className="min-h-screen">
 
-            <p className="hidden text-xs text-muted-foreground sm:block">
-              Analyze and improve your resume
-            </p>
-          </div>
-
-          <Button size="sm" className="font-medium shadow-sm">
-            Analyze New Resume
-          </Button>
-        </div>
-      </header>
-
-      {/* Main */}
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
-        {/* Candidate */}
         <Card className="mb-6 border shadow-sm">
           <CardContent className="flex flex-col gap-5 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
             <div className="flex items-center gap-4">
@@ -554,14 +536,12 @@ export function ATSChecker({
             </div>
           </CardContent>
         </Card>
-
-        {/* Analysis */}
-        <div className="grid gap-6 lg:grid-cols-3">
+        <div className="pb-5">
           <ScoreCard score={analyserResult.overallScore} />
+        </div>
 
-          <div className="lg:col-span-2">
-            <OverviewCard analyserResult={analyserResult} />
-          </div>
+        <div className="grid gap-6">
+          <OverviewCard analyserResult={analyserResult} />
         </div>
 
         {/* Issues */}

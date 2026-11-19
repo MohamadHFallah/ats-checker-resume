@@ -91,16 +91,11 @@ export default function DashboardPage() {
           </Link>
         </section>
       ) : (
-        <div className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
+        <div className="mt-2 grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
           <section aria-label="Selected resume analysis" className="min-w-0">
             {selected?.analysis ? (
-              <>
-                <div className="mb-5">
-                  <h2 className="font-heading text-2xl">Analyze and improve your resume</h2>
-                  <p className="mt-1 text-sm text-muted-foreground">{selected.title}</p>
-                </div>
-                <ATSChecker {...selected.analysis} />
-              </>
+              <ATSChecker {...selected.analysis} />
+
             ) : (
               <p className="rounded-md border border-border bg-card p-5 text-sm text-muted-foreground">
                 No analysis is saved for this resume yet.
