@@ -1,36 +1,103 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ATS Resume Checker
 
-## Getting Started
+An AI-powered resume review and job-comparison app. Paste resume text to receive a structured review, save it to your account, then compare it with job descriptions. Results are estimates for guidance—not official ATS scores, screening predictions, or guarantees of passing an ATS.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Extracts resume details and reviews structure, strengths, weaknesses, ATS-related issues, and suggested improvements.
+- Compares a saved resume against a job description and presents matched skills, missing or unconfirmed requirements, keywords, and recommendations.
+- Uses LangChain structured output with Zod schemas and stores resumes and comparisons for authenticated users.
+- Includes a dashboard with saved resumes, comparison history, and light/dark theme selection.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Requirements
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Node.js 20 or newer
+- pnpm 11 (the package manager specified in `package.json`)
+- PostgreSQL database
+- GitHub OAuth app for sign-in
+- OpenAI API key for analysis
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Local setup
 
-## Learn More
+1. Clone the repository and install dependencies:
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   git clone <repository-url>
+   cd at-checker
+   pnpm install
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. Create a `.env` file in the project root:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   ```dotenv
+   DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/at_checker?schema=public"
+   OPENAI_API_KEY="your-openai-api-key"
+   BETTER_AUTH_SECRET="replace-with-a-long-random-secret"
+   BETTER_AUTH_URL="http://localhost:3000"
+   GITHUB_CLIENT_ID="your-github-oauth-client-id"
+   GITHUB_CLIENT_SECRET="your-github-oauth-client-secret"
+   ```
 
-## Deploy on Vercel
+   Generate a secret with `openssl rand -base64 32`. Keep `.env` private and never commit real credentials.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+3. Create a GitHub OAuth app. For local development, set its authorization callback URL to:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+   ```text
+   http://localhost:3000/api/auth/callback/github
+   ```
+
+4. Make sure PostgreSQL is running and `DATABASE_URL` points to a database the app can access. The package's `postinstall` script runs `prisma db push` to synchronize the schema on dependency installation. If needed, synchronize it manually:
+
+   ```bash
+   pnpm exec prisma db push
+   ```
+
+5. Start the development server:
+
+   ```bash
+   pnpm dev
+   ```
+
+   Open [http://localhost:3000](http://localhost:3000).
+
+## Using the app
+
+1. Sign in with GitHub.
+2. Submit plain-text resume content. Resume input must contain at least 100 characters and can be up to 20,000 characters.
+3. Optionally provide a job description during analysis (80–20,000 characters), or open a saved resume in the dashboard and compare it with a job description later.
+4. Review the resume analysis and job comparison from the dashboard.
+
+Only plain text is supported; PDF/DOCX upload and parsing are not currently included.
+
+## Scripts
+
+| Command | Purpose |
+| --- | --- |
+| `pnpm dev` | Start the Next.js development server |
+| `pnpm build` | Build the production app |
+| `pnpm start` | Start the production server after building |
+| `pnpm lint` | Run ESLint |
+| `pnpm prisma:generate` | Run the configured Prisma generate command |
+| `pnpm prisma:migrate` | Run Prisma development migrations |
+| `pnpm prisma:prod` | Apply Prisma migrations in production |
+| `pnpm prisma:studio` | Open Prisma Studio |
+| `pnpm prisma:format` | Format the Prisma schema |
+
+
+## Privacy and security notes
+
+Resume and job-description text is sent to OpenAI for analysis and saved in the configured PostgreSQL database for signed-in users. Treat this information as sensitive. Use a trusted database, restrict access to API credentials, and review the AI provider's data handling terms before using real personal data.
+
+This repository is an MVP, not a security certification. In particular, review rate limiting, abuse prevention, retention/deletion controls, monitoring, and production OAuth configuration before public deployment. Do not log or share real resume text in issue reports.
+
+## Tech stack
+
+- Next.js App Router, React, and TypeScript
+- Tailwind CSS and shadcn UI components
+- Better Auth with GitHub OAuth
+- Prisma ORM and PostgreSQL
+- LangChain, OpenAI, and Zod structured schemas
+
+## License
+
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
