@@ -136,7 +136,7 @@
 
 :root {
   /* LinkedIn look: warm gray page, white cards, vivid blue actions */
-  --background: oklch(0.962 0.006 84.6); /* #F4F2EE */
+  --background: oklch(100% 0.00385 106.917); /* #F4F2EE */
   --foreground: oklch(0.213 0 0); /* #191919 */
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.213 0 0);
@@ -159,7 +159,7 @@
   --chart-3: oklch(0.74 0.14 75); /* amber */
   --chart-4: oklch(0.38 0.124 254.7); /* deep blue */
   --chart-5: oklch(0.755 0.121 249.4); /* light blue */
-  --radius: 0.5rem;
+  --radius: 0.8rem;
   --sidebar: oklch(1 0 0);
   --sidebar-foreground: oklch(0.213 0 0);
   --sidebar-primary: oklch(0.516 0.163 254.7);

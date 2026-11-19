@@ -2,9 +2,7 @@
 
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
 import { ATSJobDescriptionResult } from './atsJob';
 
 type AtsIssue = {
@@ -222,30 +220,54 @@ function SectionHeader({ title, count }: { title: string; count?: number }) {
 }
 
 function ScoreCard({ score }: { score: number }) {
-  const percentage = score * 10;
+  const percentage = score;
+
+  const rating =
+    percentage <= 30
+      ? { label: 'Needs work', color: 'text-red-600', border: 'border-red-500', dot: 'bg-red-500' }
+      : percentage <= 50
+        ? {
+          label: 'Fair',
+          color: 'text-yellow-600',
+          border: 'border-yellow-500',
+          dot: 'bg-yellow-500',
+        }
+        : percentage <= 75
+          ? { label: 'Good', color: 'text-blue-600', border: 'border-blue-500', dot: 'bg-blue-500' }
+          : {
+            label: 'Strong',
+            color: 'text-green-600',
+            border: 'border-green-500',
+            dot: 'bg-green-500',
+          };
 
   return (
     <Card className="px-6 pb-2 pt-6">
       <CardContent className="flex flex-col items-center justify-center px-6 py-8">
-        <div className="relative flex size-36 items-center justify-center rounded-full border-[10px] border-green-100 sm:size-40">
+        <div
+          className={`relative flex size-36 items-center justify-center rounded-full border-10 sm:size-40 ${rating.border}`}
+        >
           <div className="text-center">
-            <div className="text-5xl font-bold tracking-tight text-foreground">{score}</div>
-
-            <div className="text-xs font-medium text-muted-foreground">OUT OF 10</div>
+            <p className="text-4xl font-bold tracking-tight text-foreground">{percentage}%</p>
+            <p className="text-xs font-medium text-muted-foreground">COMPATIBILITY</p>
           </div>
         </div>
 
         <div className="mt-5 flex items-center gap-2">
-          <span className="size-2 rounded-full bg-green-500" />
+          <span className={`size-2 rounded-full ${rating.dot}`} />
 
-          <span className="text-sm font-semibold text-green-600">Strong Resume</span>
+          <span className={`text-sm font-semibold ${rating.color}`}>{rating.label} resume</span>
         </div>
 
         <p className="mt-2 max-w-xs text-center text-sm leading-6 text-muted-foreground">
-          Your resume has a strong ATS structure with a few areas that can be improved.
+          {percentage <= 30
+            ? 'Your resume may need significant improvements to better match this role.'
+            : percentage <= 50
+              ? 'Your resume has some relevant content, with several areas to improve.'
+              : percentage <= 75
+                ? 'Your resume is a reasonable match, with opportunities to strengthen it.'
+                : 'Your resume appears to be a strong match for this role.'}
         </p>
-
-        <Progress value={percentage} className="mt-6 w-full max-w-xs" />
       </CardContent>
     </Card>
   );
@@ -253,7 +275,7 @@ function ScoreCard({ score }: { score: number }) {
 
 function OverviewCard({ analyserResult }: { analyserResult: AnalyzerResult }) {
   return (
-    <Card >
+    <Card>
       <CardHeader className="px-6 pb-2 pt-6">
         <SectionHeader title="Resume Overview" />
       </CardHeader>
@@ -277,7 +299,7 @@ function OverviewCard({ analyserResult }: { analyserResult: AnalyzerResult }) {
             {analyserResult.strengths.map((item, index) => (
               <div
                 key={index}
-                className="rounded-lg border border-green-100 bg-green-50/50 px-3 py-2.5 text-sm leading-5 text-muted-foreground"
+                className="rounded-lg border border-green-200 px-3 py-2.5 text-sm leading-5 text-muted-foreground"
               >
                 {item}
               </div>
@@ -303,7 +325,7 @@ function OverviewCard({ analyserResult }: { analyserResult: AnalyzerResult }) {
             {analyserResult.weaknesses.map((item, index) => (
               <div
                 key={index}
-                className="rounded-lg border border-yellow-100 bg-yellow-50/50 px-3 py-2.5 text-sm leading-5 text-muted-foreground"
+                className="rounded-lg border border-yellow-200 px-3 py-2.5 text-sm leading-5 text-muted-foreground"
               >
                 {item}
               </div>
@@ -326,10 +348,10 @@ function AtsIssues({ analyserResult }: { analyserResult: AnalyzerResult }) {
         {analyserResult.atsIssues.map((item, index) => (
           <div
             key={index}
-            className="group rounded-xl border bg-muted/20 p-4 transition-colors hover:border-muted-foreground/20 hover:bg-muted/30"
+            className="group rounded-xl border p-4 transition-colors hover:border-muted-foreground/20 hover:bg-muted/30"
           >
             <div className="flex gap-4">
-              <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-yellow-50 text-yellow-600">
+              <div className="flex size-9 shrink-0 items-center justify-center rounded-lg text-red-600">
                 !
               </div>
 
@@ -364,10 +386,7 @@ function Suggestions({ analyserResult }: { analyserResult: AnalyzerResult }) {
   return (
     <Card>
       <CardHeader className="px-6 pb-2 pt-6">
-        <SectionHeader
-          title="Recommended Improvements"
-          count={analyserResult.suggestions.length}
-        />
+        <SectionHeader title="Recommended Improvements" count={analyserResult.suggestions.length} />
       </CardHeader>
 
       <CardContent className="grid gap-3 md:grid-cols-2">
@@ -505,7 +524,6 @@ export function ATSChecker({
 }: Pick<ATSResponse, 'resumeResult' | 'analyserResult'>) {
   return (
     <main className="min-h-screen">
-
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
         <Card className="mb-6 border shadow-sm">
           <CardContent className="flex flex-col gap-5 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">

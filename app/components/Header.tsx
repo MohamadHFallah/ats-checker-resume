@@ -13,8 +13,6 @@ export function Header() {
   const { data: session } = useSession();
 
   const navItems = [
-    { label: 'Resume Checker', href: '/checker' },
-    { label: 'Magic Editor', href: '/editor' },
     { label: 'Pricing', href: '/pricing' },
     { label: 'Blog', href: '/blog' },
   ];

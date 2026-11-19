@@ -59,7 +59,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-full px-4 pb-16 pt-8 sm:px-6 sm:pt-10">
+    <main className="mx-auto min-h-screen w-full  max-w-full px-4 pb-16 pt-8 sm:px-6 sm:pt-10">
       <header className="flex flex-col gap-4 border-b border-border pb-6 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-sm font-medium text-primary">Your workspace</p>
@@ -72,7 +72,7 @@ export default function DashboardPage() {
           href="/"
           className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:w-auto"
         >
-          <Plus aria-hidden="true" className="size-4" /> Add a resume
+          <Plus aria-hidden="true" className="size-4" /> Add a Resume
         </Link>
       </header>
 
