@@ -10,20 +10,16 @@ export const auth = betterAuth({
   // emailAndPassword: {
   //     enabled: true,
   // },
-  logger: {
-    level: 'debug',
-  },
   plugins: [nextCookies()],
-  baseURL: process.env.BETTER_AUTH_URL ?? 'http://localhost:3000',
+  baseURL: process.env.BETTER_AUTH_URL,
   secret: process.env.BETTER_AUTH_SECRET,
   advanced: {
     disableCSRFCheck: process.env.NODE_ENV === 'development',
   },
   socialProviders: {
     github: {
-      clientId: process.env.GITHUB_CLIENT_ID as string,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
-      redirectURI: 'http://localhost:3000/api/auth/callback/github',
+      clientId: process.env.GITHUB_CLIENT_ID ?? '',
+      clientSecret: process.env.GITHUB_CLIENT_SECRET ?? '',
     },
   },
 });

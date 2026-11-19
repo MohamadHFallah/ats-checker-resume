@@ -40,7 +40,7 @@ An AI-powered resume review and job-comparison app. Paste resume text to receive
 
    Generate a secret with `openssl rand -base64 32`. Keep `.env` private and never commit real credentials.
 
-3. Create a GitHub OAuth app. For local development, set its authorization callback URL to:
+3. Create a GitHub OAuth app. Set its authorization callback URL to your app's Better Auth callback endpoint (use the same origin as `BETTER_AUTH_URL`):
 
    ```text
    http://localhost:3000/api/auth/callback/github
@@ -71,24 +71,23 @@ Only plain text is supported; PDF/DOCX upload and parsing are not currently incl
 
 ## Scripts
 
-| Command | Purpose |
-| --- | --- |
-| `pnpm dev` | Start the Next.js development server |
-| `pnpm build` | Build the production app |
-| `pnpm start` | Start the production server after building |
-| `pnpm lint` | Run ESLint |
+| Command                | Purpose                                    |
+| ---------------------- | ------------------------------------------ |
+| `pnpm dev`             | Start the Next.js development server       |
+| `pnpm build`           | Build the production app                   |
+| `pnpm start`           | Start the production server after building |
+| `pnpm lint`            | Run ESLint                                 |
 | `pnpm prisma:generate` | Run the configured Prisma generate command |
-| `pnpm prisma:migrate` | Run Prisma development migrations |
-| `pnpm prisma:prod` | Apply Prisma migrations in production |
-| `pnpm prisma:studio` | Open Prisma Studio |
-| `pnpm prisma:format` | Format the Prisma schema |
-
+| `pnpm prisma:migrate`  | Run Prisma development migrations          |
+| `pnpm prisma:prod`     | Apply Prisma migrations in production      |
+| `pnpm prisma:studio`   | Open Prisma Studio                         |
+| `pnpm prisma:format`   | Format the Prisma schema                   |
 
 ## Privacy and security notes
 
 Resume and job-description text is sent to OpenAI for analysis and saved in the configured PostgreSQL database for signed-in users. Treat this information as sensitive. Use a trusted database, restrict access to API credentials, and review the AI provider's data handling terms before using real personal data.
 
-This repository is an MVP, not a security certification. In particular, review rate limiting, abuse prevention, retention/deletion controls, monitoring, and production OAuth configuration before public deployment. Do not log or share real resume text in issue reports.
+This repository is an MVP, not a security certification. Before public deployment, configure production OAuth origins/secrets, add shared rate limiting and abuse monitoring at the hosting or gateway layer, and define retention/deletion controls. Do not log or share real resume text in issue reports.
 
 ## Tech stack
 

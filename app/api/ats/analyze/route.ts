@@ -5,7 +5,7 @@ import prisma from '@/lib/prisma';
 import { ResumeSchema } from '@/lib/ai/resumeSchema';
 import { ResumeAnalysisSchema } from '@/lib/ai/resumeAnalysisSchema';
 import { atsAnalysisSchema } from '@/lib/ai/atsAnalysisSchema';
-import { requireApiAuth } from '@/lib/auth/getApiSession';
+import { readJsonBody, rejectCrossOrigin, requireApiAuth } from '@/lib/auth/getApiSession';
 
 const inputSchema = z.object({
   content: z.string().trim().min(100, 'Add at least 100 characters of resume text.').max(20_000),
@@ -77,6 +77,9 @@ ATS-focused comparison:
 Return only data matching the provided structured-output schema.`;
 
 export async function POST(request: Request) {
+  const originError = await rejectCrossOrigin(request);
+  if (originError) return originError;
+
   const session = await requireApiAuth();
   if (!session) {
     return NextResponse.json(
@@ -86,19 +89,24 @@ export async function POST(request: Request) {
   }
 
   let input: z.infer<typeof inputSchema>;
+  const body = await readJsonBody(request, 45_000);
+  if (body.error) return body.error;
+
   try {
-    input = inputSchema.parse(await request.json());
+    input = inputSchema.parse(body.data);
   } catch (error) {
     const message =
       error instanceof z.ZodError
         ? (error.issues[0]?.message ?? 'Check the resume text and try again.')
-        : 'The request body must be valid JSON.';
+        : 'Check the submitted resume text and try again.';
     return NextResponse.json({ error: message }, { status: 400 });
   }
 
   try {
     const resumeResult = await model
-      .withStructuredOutput(ResumeSchema)
+      .withStructuredOutput(ResumeSchema, {
+        includeRaw: true
+      })
       .invoke(
         `${RESUME_EXTRACTION_INSTRUCTIONS}\n\n<resume_text>\n${input.content}\n</resume_text>`
       );
@@ -109,10 +117,10 @@ export async function POST(request: Request) {
 
     const jobDescResult = input.jobDescription
       ? await model
-          .withStructuredOutput(atsAnalysisSchema)
-          .invoke(
-            `${JOB_COMPARISON_INSTRUCTIONS}\n\n<resume_text>\n${input.content}\n</resume_text>\n\n<job_description>\n${input.jobDescription}\n</job_description>`
-          )
+        .withStructuredOutput(atsAnalysisSchema)
+        .invoke(
+          `${JOB_COMPARISON_INSTRUCTIONS}\n\n<resume_text>\n${input.content}\n</resume_text>\n\n<job_description>\n${input.jobDescription}\n</job_description>`
+        )
       : null;
 
     const analysis = { resumeResult, analyserResult, jobDescResult };

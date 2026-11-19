@@ -1,8 +1,11 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { requireApiAuth } from '@/lib/auth/getApiSession';
+import { rejectCrossOrigin, requireApiAuth } from '@/lib/auth/getApiSession';
 
-export async function GET() {
+export async function GET(request: Request) {
+  const originError = await rejectCrossOrigin(request);
+  if (originError) return originError;
+
   const session = await requireApiAuth();
   if (!session) {
     return NextResponse.json({ error: 'Sign in to view your saved resumes.' }, { status: 401 });
@@ -24,12 +27,8 @@ export async function GET() {
         },
       },
     });
-    console.log('resumes ', resumes);
-
     return NextResponse.json({ resumes });
-  } catch (e) {
-    console.log('error ', e);
-
+  } catch {
     return NextResponse.json({ error: 'Saved resumes could not be loaded.' }, { status: 500 });
   }
 }

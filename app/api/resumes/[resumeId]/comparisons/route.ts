@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import prisma from '@/lib/prisma';
 import { atsAnalysisSchema } from '@/lib/ai/atsAnalysisSchema';
-import { requireApiAuth } from '@/lib/auth/getApiSession';
+import { readJsonBody, rejectCrossOrigin, requireApiAuth } from '@/lib/auth/getApiSession';
 
 const requestSchema = z.object({
   jobDescription: z
@@ -42,6 +42,9 @@ const model = new ChatOpenAI({ model: 'gpt-4.1-mini', timeout: 45_000 });
 type RouteContext = { params: Promise<{ resumeId: string }> };
 
 export async function POST(request: Request, { params }: RouteContext) {
+  const originError = await rejectCrossOrigin(request);
+  if (originError) return originError;
+
   const session = await requireApiAuth();
   if (!session) {
     return NextResponse.json({ error: 'Sign in to compare a job description.' }, { status: 401 });
@@ -49,13 +52,16 @@ export async function POST(request: Request, { params }: RouteContext) {
 
   const { resumeId } = await params;
   let input: z.infer<typeof requestSchema>;
+  const body = await readJsonBody(request, 25_000);
+  if (body.error) return body.error;
+
   try {
-    input = requestSchema.parse(await request.json());
+    input = requestSchema.parse(body.data);
   } catch (error) {
     const message =
       error instanceof z.ZodError
         ? (error.issues[0]?.message ?? 'Check the job description and try again.')
-        : 'The request body must be valid JSON.';
+        : 'Check the submitted job description and try again.';
     return NextResponse.json({ error: message }, { status: 400 });
   }
 
