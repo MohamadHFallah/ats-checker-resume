@@ -16,80 +16,79 @@
   --font-heading: var(--font-serif, Georgia), ui-serif, serif;
 
   /* ─────────────────────────────
-     Neutral (warm stone)
+     Neutral (LinkedIn-style warm gray)
      ───────────────────────────── */
 
-  --color-default-50: #fafaf9;
-  --color-default-100: #f5f5f4;
-  --color-default-200: #e7e5e4;
-  --color-default-300: #d6d3d1;
-  --color-default-400: #a8a29e;
-  --color-default-500: #78716c;
-  --color-default-600: #57534e;
-  --color-default-700: #44403c;
-  --color-default-800: #292524;
-  --color-default-900: #1c1917;
+  --color-default-50: #faf9f7;
+  --color-default-100: #f4f2ee;
+  --color-default-200: #e0dfdc;
+  --color-default-300: #c9c6c0;
+  --color-default-400: #a3a09a;
+  --color-default-500: #7a7872;
+  --color-default-600: #5e5e5e;
+  --color-default-700: #454545;
+  --color-default-800: #2e2e2e;
+  --color-default-900: #191919;
 
   /* ─────────────────────────────
-     Primary (petrol blue: calm, trustworthy, not "AI blue/purple")
-     Main action color is primary-700.
+     Primary (LinkedIn blue). Main action color is primary-600.
      ───────────────────────────── */
 
-  --color-primary-50: #f0f7f9;
-  --color-primary-100: #dcecf1;
-  --color-primary-200: #bcd9e3;
-  --color-primary-300: #8fbccd;
-  --color-primary-400: #5a97b0;
-  --color-primary-500: #3b7b96;
-  --color-primary-600: #2d627b;
-  --color-primary-700: #274f63;
-  --color-primary-800: #234253;
-  --color-primary-900: #1f3745;
+  --color-primary-50: #eaf4fe;
+  --color-primary-100: #d6e9fb;
+  --color-primary-200: #b0d4f7;
+  --color-primary-300: #70b5f9;
+  --color-primary-400: #378fe9;
+  --color-primary-500: #1b7bd6;
+  --color-primary-600: #0a66c2;
+  --color-primary-700: #004182;
+  --color-primary-800: #003468;
+  --color-primary-900: #00264d;
 
   /* ─────────────────────────────
-     Success: strong match / high score
+     Success: strong match / high score (LinkedIn green)
      ───────────────────────────── */
 
-  --color-success-50: #f0fdf4;
-  --color-success-100: #dcfce7;
-  --color-success-200: #bbf7d0;
-  --color-success-300: #86efac;
-  --color-success-400: #4ade80;
-  --color-success-500: #22c55e;
-  --color-success-600: #16a34a;
-  --color-success-700: #15803d;
-  --color-success-800: #166534;
-  --color-success-900: #14532d;
+  --color-success-50: #e7f6ee;
+  --color-success-100: #c8ecd8;
+  --color-success-200: #9cddb9;
+  --color-success-300: #62c792;
+  --color-success-400: #2fae6c;
+  --color-success-500: #12955a;
+  --color-success-600: #0a8450;
+  --color-success-700: #057642;
+  --color-success-800: #045c34;
+  --color-success-900: #04472a;
 
   /* ─────────────────────────────
-     Warning: partial match / unconfirmed
+     Warning / Highlight: partial match, unconfirmed, small accents
      ───────────────────────────── */
 
-  --color-warning-50: #fffbeb;
-  --color-warning-100: #fef3c7;
-  --color-warning-200: #fde68a;
-  --color-warning-300: #fcd34d;
-  --color-warning-400: #fbbf24;
-  --color-warning-500: #f59e0b;
-  --color-warning-600: #d97706;
-  --color-warning-700: #b45309;
-  --color-warning-800: #92400e;
-  --color-warning-900: #78350f;
+  --color-warning-50: #fff8e6;
+  --color-warning-100: #fdedbf;
+  --color-warning-200: #fadd8a;
+  --color-warning-300: #f5c95a;
+  --color-warning-400: #f5b843;
+  --color-warning-500: #e7a33e;
+  --color-warning-600: #c37d16;
+  --color-warning-700: #915907;
+  --color-warning-800: #6e4305;
+  --color-warning-900: #503104;
 
   /* ─────────────────────────────
      Danger: weak match / errors
      ───────────────────────────── */
 
-  --color-danger-50: #fef2f2;
-  --color-danger-100: #fee2e2;
-  --color-danger-200: #fecaca;
-  --color-danger-300: #fca5a5;
-  --color-danger-400: #f87171;
-  --color-danger-500: #ef4444;
-  --color-danger-600: #dc2626;
-  --color-danger-700: #b91c1c;
-  --color-danger-800: #991b1b;
-  --color-danger-900: #7f1d1d;
+  --color-danger-50: #feefef;
+  --color-danger-100: #fddcdc;
+  --color-danger-200: #fab8b8;
+  --color-danger-300: #f58a8a;
+  --color-danger-400: #ff6b6b;
+  --color-danger-500: #e8393d;
+  --color-danger-600: #cc1016;
+  --color-danger-700: #a30d12;
+  --color-danger-800: #7d0a0e;
+  --color-danger-900: #5c0709;
 
   /* ─────────────────────────────
      shadcn semantic tokens (values live in :root / .dark below)
@@ -136,73 +135,73 @@
 }
 
 :root {
-  /* Warm paper background, white cards separated by 1px borders (no shadows) */
-  --background: oklch(0.982 0.004 91.4);
-  --foreground: oklch(0.216 0.006 56);
+  /* LinkedIn look: warm gray page, white cards, vivid blue actions */
+  --background: oklch(0.962 0.006 84.6); /* #F4F2EE */
+  --foreground: oklch(0.213 0 0); /* #191919 */
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.216 0.006 56);
+  --card-foreground: oklch(0.213 0 0);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.216 0.006 56);
-  --primary: oklch(0.407 0.056 232.2);
-  --primary-foreground: oklch(0.982 0.004 91.4);
-  --secondary: oklch(0.967 0.004 91.4);
-  --secondary-foreground: oklch(0.268 0.006 34.3);
-  --muted: oklch(0.967 0.004 91.4);
-  --muted-foreground: oklch(0.495 0.011 72.5);
-  --accent: oklch(0.971 0.008 216.6);
-  --accent-foreground: oklch(0.363 0.047 234.1);
-  --destructive: oklch(0.577 0.215 27.3);
-  --border: oklch(0.913 0.01 87.5);
-  --input: oklch(0.874 0.012 84.6);
-  --ring: oklch(0.645 0.073 226.3);
-  --chart-1: oklch(0.769 0.053 223.1);
-  --chart-2: oklch(0.645 0.073 226.3);
-  --chart-3: oklch(0.552 0.078 228.2);
-  --chart-4: oklch(0.471 0.069 231.2);
-  --chart-5: oklch(0.363 0.047 234.1);
-  --radius: 0.375rem;
-  --sidebar: oklch(0.967 0.004 91.4);
-  --sidebar-foreground: oklch(0.216 0.006 56);
-  --sidebar-primary: oklch(0.407 0.056 232.2);
-  --sidebar-primary-foreground: oklch(0.982 0.004 91.4);
-  --sidebar-accent: oklch(0.971 0.008 216.6);
-  --sidebar-accent-foreground: oklch(0.363 0.047 234.1);
-  --sidebar-border: oklch(0.913 0.01 87.5);
-  --sidebar-ring: oklch(0.645 0.073 226.3);
+  --popover-foreground: oklch(0.213 0 0);
+  --primary: oklch(0.516 0.163 254.7); /* #0A66C2 */
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.938 0.009 84.6); /* #EDEAE4 */
+  --secondary-foreground: oklch(0.213 0 0);
+  --muted: oklch(0.938 0.009 84.6);
+  --muted-foreground: oklch(0.482 0 0); /* #5E5E5E */
+  --accent: oklch(0.963 0.017 248); /* #EAF4FE */
+  --accent-foreground: oklch(0.38 0.124 254.7); /* #004182 */
+  --destructive: oklch(0.536 0.213 27.7); /* #CC1016 */
+  --border: oklch(0.904 0.004 91.4); /* #E0DFDC */
+  --input: oklch(0.827 0.009 84.6);
+  --ring: oklch(0.641 0.159 252.1); /* #378FE9 */
+  --chart-1: oklch(0.641 0.159 252.1); /* blue */
+  --chart-2: oklch(0.6 0.13 155); /* green */
+  --chart-3: oklch(0.74 0.14 75); /* amber */
+  --chart-4: oklch(0.38 0.124 254.7); /* deep blue */
+  --chart-5: oklch(0.755 0.121 249.4); /* light blue */
+  --radius: 0.5rem;
+  --sidebar: oklch(1 0 0);
+  --sidebar-foreground: oklch(0.213 0 0);
+  --sidebar-primary: oklch(0.516 0.163 254.7);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.963 0.017 248);
+  --sidebar-accent-foreground: oklch(0.38 0.124 254.7);
+  --sidebar-border: oklch(0.904 0.004 91.4);
+  --sidebar-ring: oklch(0.641 0.159 252.1);
 }
 
 .dark {
-  --background: oklch(0.201 0.004 84.6);
-  --foreground: oklch(0.967 0.004 91.4);
-  --card: oklch(0.235 0.006 91.6);
-  --card-foreground: oklch(0.967 0.004 91.4);
-  --popover: oklch(0.235 0.006 91.6);
-  --popover-foreground: oklch(0.967 0.004 91.4);
-  --primary: oklch(0.769 0.053 223.1);
-  --primary-foreground: oklch(0.218 0.024 236.4);
-  --secondary: oklch(0.277 0.006 91.6);
-  --secondary-foreground: oklch(0.967 0.004 91.4);
-  --muted: oklch(0.277 0.006 91.6);
-  --muted-foreground: oklch(0.716 0.009 56.3);
-  --accent: oklch(0.324 0.039 235.4);
-  --accent-foreground: oklch(0.933 0.018 218.4);
-  --destructive: oklch(0.711 0.166 22.2);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.645 0.073 226.3);
-  --chart-1: oklch(0.769 0.053 223.1);
-  --chart-2: oklch(0.645 0.073 226.3);
-  --chart-3: oklch(0.552 0.078 228.2);
-  --chart-4: oklch(0.471 0.069 231.2);
-  --chart-5: oklch(0.363 0.047 234.1);
-  --sidebar: oklch(0.235 0.006 91.6);
-  --sidebar-foreground: oklch(0.967 0.004 91.4);
-  --sidebar-primary: oklch(0.769 0.053 223.1);
-  --sidebar-primary-foreground: oklch(0.218 0.024 236.4);
-  --sidebar-accent: oklch(0.324 0.039 235.4);
-  --sidebar-accent-foreground: oklch(0.933 0.018 218.4);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.645 0.073 226.3);
+  --background: oklch(0.237 0.01 248.2); /* #1B1F23 */
+  --foreground: oklch(0.961 0.004 91.4);
+  --card: oklch(0.281 0.015 244.2); /* #232A30 */
+  --card-foreground: oklch(0.961 0.004 91.4);
+  --popover: oklch(0.281 0.015 244.2);
+  --popover-foreground: oklch(0.961 0.004 91.4);
+  --primary: oklch(0.755 0.121 249.4); /* #70B5F9 */
+  --primary-foreground: oklch(0.269 0.083 253);
+  --secondary: oklch(0.324 0.017 244.7);
+  --secondary-foreground: oklch(0.961 0.004 91.4);
+  --muted: oklch(0.324 0.017 244.7);
+  --muted-foreground: oklch(0.756 0.013 244.3);
+  --accent: oklch(0.341 0.076 250.1);
+  --accent-foreground: oklch(0.925 0.032 246.7);
+  --destructive: oklch(0.712 0.181 22.8);
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 16%);
+  --ring: oklch(0.755 0.121 249.4);
+  --chart-1: oklch(0.755 0.121 249.4);
+  --chart-2: oklch(0.7 0.14 155);
+  --chart-3: oklch(0.82 0.14 80);
+  --chart-4: oklch(0.641 0.159 252.1);
+  --chart-5: oklch(0.925 0.032 246.7);
+  --sidebar: oklch(0.281 0.015 244.2);
+  --sidebar-foreground: oklch(0.961 0.004 91.4);
+  --sidebar-primary: oklch(0.755 0.121 249.4);
+  --sidebar-primary-foreground: oklch(0.269 0.083 253);
+  --sidebar-accent: oklch(0.341 0.076 250.1);
+  --sidebar-accent-foreground: oklch(0.925 0.032 246.7);
+  --sidebar-border: oklch(1 0 0 / 12%);
+  --sidebar-ring: oklch(0.755 0.121 249.4);
 }
 
 @layer base {

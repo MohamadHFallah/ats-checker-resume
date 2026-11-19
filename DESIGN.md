@@ -3,7 +3,7 @@
 Read this file before any UI work. It defines the visual identity of the ATS Resume Checker. Colors and radius are already implemented as tokens in `globals.css`; use them, never hard-coded values.
 
  You must be separate of concern for creating component, also for creating component you create into components folder, this path: '/apps/components/'
-
+ 
 ## 1. Direction
 
 Calm, editorial, and trustworthy: like a printed analytical report, not a startup landing page. Think Linear docs or Stripe docs. The product gives a serious assessment of someone's career document, so the tone is restrained and precise.
