@@ -1,9 +1,15 @@
-import { useState } from "react";
-import { ATSJobDescriptionResult } from "@/app/components/atsJob";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import type { SavedComparison } from "./types";
+import { useState } from 'react';
+import { ATSJobDescriptionResult } from '@/app/components/atsJob';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import type { SavedComparison } from './types';
 
-const INTRO_SEEN_KEY = "ats-checker-comparison-intro-seen";
+const INTRO_SEEN_KEY = 'ats-checker-comparison-intro-seen';
 
 type ComparisonDialogProps = {
   comparison: SavedComparison | null;
@@ -12,29 +18,39 @@ type ComparisonDialogProps = {
 
 export function ComparisonDialog({ comparison, onOpenChange }: ComparisonDialogProps) {
   const [introDismissed, setIntroDismissed] = useState(false);
-  const showIntro = comparison !== null && !introDismissed && (() => {
-    try {
-      return window.localStorage.getItem(INTRO_SEEN_KEY) !== "true";
-    } catch {
-      return false;
-    }
-  })();
+  const showIntro =
+    comparison !== null &&
+    !introDismissed &&
+    (() => {
+      try {
+        return window.localStorage.getItem(INTRO_SEEN_KEY) !== 'true';
+      } catch {
+        return false;
+      }
+    })();
 
   return (
-    <Dialog open={comparison !== null} onOpenChange={(open) => { if (!open) onOpenChange(false); }}>
+    <Dialog
+      open={comparison !== null}
+      onOpenChange={(open) => {
+        if (!open) onOpenChange(false);
+      }}
+    >
       {showIntro ? (
         <DialogContent>
           <DialogHeader>
             <DialogTitle>About your job comparison</DialogTitle>
             <DialogDescription>
-              This report estimates how closely your saved resume aligns with the job description. It is guidance, not an official ATS score or a guarantee of passing an applicant tracking system.
+              This report estimates how closely your saved resume aligns with the job description.
+              It is guidance, not an official ATS score or a guarantee of passing an applicant
+              tracking system.
             </DialogDescription>
           </DialogHeader>
           <button
             type="button"
             onClick={() => {
               try {
-                window.localStorage.setItem(INTRO_SEEN_KEY, "true");
+                window.localStorage.setItem(INTRO_SEEN_KEY, 'true');
               } catch {
                 // The intro remains dismissed for this open session if storage is unavailable.
               }
@@ -45,16 +61,20 @@ export function ComparisonDialog({ comparison, onOpenChange }: ComparisonDialogP
             View comparison
           </button>
         </DialogContent>
-      ) : comparison && (
-        <DialogContent className="max-h-[90dvh] max-w-3xl gap-0 overflow-y-auto rounded-none p-0 sm:max-w-3xl">
-          <DialogHeader className="sticky top-0 border-b border-border bg-background px-5 py-4 text-left">
-            <DialogTitle className="font-heading text-2xl">{comparison.title}</DialogTitle>
-            <DialogDescription>Compared on {new Date(comparison.createdAt).toLocaleDateString()}</DialogDescription>
-          </DialogHeader>
-          <div className="px-5 py-5">
-            <ATSJobDescriptionResult data={comparison.analysis} />
-          </div>
-        </DialogContent>
+      ) : (
+        comparison && (
+          <DialogContent className="max-h-[90dvh] max-w-3xl gap-0 overflow-y-auto rounded-none p-0 sm:max-w-3xl">
+            <DialogHeader className="sticky top-0 border-b border-border bg-background px-5 py-4 text-left">
+              <DialogTitle className="font-heading text-2xl">{comparison.title}</DialogTitle>
+              <DialogDescription>
+                Compared on {new Date(comparison.createdAt).toLocaleDateString()}
+              </DialogDescription>
+            </DialogHeader>
+            <div className="px-5 py-5">
+              <ATSJobDescriptionResult data={comparison.analysis} />
+            </div>
+          </DialogContent>
+        )
       )}
     </Dialog>
   );

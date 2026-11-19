@@ -1,20 +1,19 @@
-import React, { FC } from 'react';
+import  { FC } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { 
-  CheckCircle2, 
-  XCircle, 
-  AlertCircle, 
-  TrendingUp, 
+import {
+  CheckCircle2,
+  XCircle,
+  AlertCircle,
+  TrendingUp,
   TrendingDown,
   Lightbulb,
   Star,
   Brain,
   Award,
-  BarChart3,
   ListChecks,
-  Sparkles
+  Sparkles,
 } from 'lucide-react';
 
 // Type definitions based on the provided data
@@ -151,16 +150,16 @@ const getPriorityBadge = (priority: string) => {
 };
 
 // Main Component
-export const ATSJobDescriptionResult: FC<{ data: ATSJobDescriptionResult }> = ({ data  }) => {
-  const { 
-    matchedSkills, 
-    missingSkills, 
-    experienceMatch, 
-    educationMatch, 
-    keywords, 
-    strengths, 
-    weaknesses, 
-    recommendations 
+export const ATSJobDescriptionResult: FC<{ data: ATSJobDescriptionResult }> = ({ data }) => {
+  const {
+    matchedSkills,
+    missingSkills,
+    experienceMatch,
+    educationMatch,
+    keywords,
+    strengths,
+    weaknesses,
+    recommendations,
   } = data;
 
   // Calculate overall score (average of experience and education)
@@ -175,9 +174,7 @@ export const ATSJobDescriptionResult: FC<{ data: ATSJobDescriptionResult }> = ({
             <Brain className="h-8 w-8 text-primary" />
             ATS Resume Analyzer
           </h1>
-          <p className="text-muted-foreground">
-            Comprehensive job description match analysis
-          </p>
+          <p className="text-muted-foreground">Comprehensive job description match analysis</p>
         </div>
         <div className="flex items-center gap-3 bg-primary/10 px-4 py-2 rounded-full">
           <Sparkles className="h-5 w-5 text-primary" />
@@ -243,7 +240,11 @@ export const ATSJobDescriptionResult: FC<{ data: ATSJobDescriptionResult }> = ({
           <CardContent>
             <div className="flex flex-wrap gap-2">
               {matchedSkills.map((skill) => (
-                <Badge key={skill} variant="default" className="bg-green-100 text-green-800 hover:bg-green-200 border-green-200">
+                <Badge
+                  key={skill}
+                  variant="default"
+                  className="bg-green-100 text-green-800 hover:bg-green-200 border-green-200"
+                >
                   {skill}
                 </Badge>
               ))}
@@ -257,14 +258,20 @@ export const ATSJobDescriptionResult: FC<{ data: ATSJobDescriptionResult }> = ({
             <CardTitle className="flex items-center gap-2 text-lg">
               <XCircle className="h-5 w-5 text-red-500" />
               Missing Skills
-              <Badge variant="destructive" className="ml-2">{missingSkills.length}</Badge>
+              <Badge variant="destructive" className="ml-2">
+                {missingSkills.length}
+              </Badge>
             </CardTitle>
             <CardDescription>Skills not detected in your resume</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap gap-2">
               {missingSkills.map((skill) => (
-                <Badge key={skill} variant="outline" className="border-red-200 text-red-700 bg-red-50">
+                <Badge
+                  key={skill}
+                  variant="outline"
+                  className="border-red-200 text-red-700 bg-red-50"
+                >
                   {skill}
                 </Badge>
               ))}
@@ -290,7 +297,11 @@ export const ATSJobDescriptionResult: FC<{ data: ATSJobDescriptionResult }> = ({
               </h4>
               <div className="flex flex-wrap gap-1.5">
                 {keywords.matched.map((kw) => (
-                  <Badge key={kw} variant="secondary" className="bg-green-50 text-green-700 border-green-200">
+                  <Badge
+                    key={kw}
+                    variant="secondary"
+                    className="bg-green-50 text-green-700 border-green-200"
+                  >
                     {kw}
                   </Badge>
                 ))}
@@ -302,7 +313,11 @@ export const ATSJobDescriptionResult: FC<{ data: ATSJobDescriptionResult }> = ({
               </h4>
               <div className="flex flex-wrap gap-1.5">
                 {keywords.missing.map((kw) => (
-                  <Badge key={kw} variant="outline" className="border-red-200 text-red-700 bg-red-50">
+                  <Badge
+                    key={kw}
+                    variant="outline"
+                    className="border-red-200 text-red-700 bg-red-50"
+                  >
                     {kw}
                   </Badge>
                 ))}
@@ -383,7 +398,8 @@ export const ATSJobDescriptionResult: FC<{ data: ATSJobDescriptionResult }> = ({
 
       {/* Footer note */}
       <div className="text-center text-xs text-muted-foreground border-t pt-4 mt-4">
-        ATS analysis based on job description and resume content. Use recommendations to tailor your application.
+        ATS analysis based on job description and resume content. Use recommendations to tailor your
+        application.
       </div>
     </div>
   );

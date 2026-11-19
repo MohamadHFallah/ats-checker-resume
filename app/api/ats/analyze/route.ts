@@ -1,18 +1,18 @@
-import { ChatOpenAI } from "@langchain/openai";
-import { NextResponse } from "next/server";
-import { z } from "zod";
-import prisma from "@/lib/prisma";
-import { ResumeSchema } from "@/lib/ai/resumeSchema";
-import { ResumeAnalysisSchema } from "@/lib/ai/resumeAnalysisSchema";
-import { atsAnalysisSchema } from "@/lib/ai/atsAnalysisSchema";
-import { requireApiAuth } from "@/lib/auth/getApiSession";
+import { ChatOpenAI } from '@langchain/openai';
+import { NextResponse } from 'next/server';
+import { z } from 'zod';
+import prisma from '@/lib/prisma';
+import { ResumeSchema } from '@/lib/ai/resumeSchema';
+import { ResumeAnalysisSchema } from '@/lib/ai/resumeAnalysisSchema';
+import { atsAnalysisSchema } from '@/lib/ai/atsAnalysisSchema';
+import { requireApiAuth } from '@/lib/auth/getApiSession';
 
 const inputSchema = z.object({
-  content: z.string().trim().min(100, "Add at least 100 characters of resume text.").max(20_000),
+  content: z.string().trim().min(100, 'Add at least 100 characters of resume text.').max(20_000),
   jobDescription: z.string().trim().min(80).max(20_000).optional(),
 });
 
-const model = new ChatOpenAI({ model: "gpt-4.1-mini", timeout: 45_000 });
+const model = new ChatOpenAI({ model: 'gpt-4.1-mini', timeout: 45_000 });
 
 const RESUME_EXTRACTION_INSTRUCTIONS = `You extract resume information into a fixed schema for a resume review product.
 
@@ -79,38 +79,46 @@ Return only data matching the provided structured-output schema.`;
 export async function POST(request: Request) {
   const session = await requireApiAuth();
   if (!session) {
-    return NextResponse.json({ error: "Sign in to save and analyze your resume." }, { status: 401 });
+    return NextResponse.json(
+      { error: 'Sign in to save and analyze your resume.' },
+      { status: 401 }
+    );
   }
 
   let input: z.infer<typeof inputSchema>;
   try {
     input = inputSchema.parse(await request.json());
   } catch (error) {
-    const message = error instanceof z.ZodError
-      ? error.issues[0]?.message ?? "Check the resume text and try again."
-      : "The request body must be valid JSON.";
+    const message =
+      error instanceof z.ZodError
+        ? (error.issues[0]?.message ?? 'Check the resume text and try again.')
+        : 'The request body must be valid JSON.';
     return NextResponse.json({ error: message }, { status: 400 });
   }
 
   try {
-    const resumeResult = await model.withStructuredOutput(ResumeSchema).invoke(
-      `${RESUME_EXTRACTION_INSTRUCTIONS}\n\n<resume_text>\n${input.content}\n</resume_text>`,
-    );
+    const resumeResult = await model
+      .withStructuredOutput(ResumeSchema)
+      .invoke(
+        `${RESUME_EXTRACTION_INSTRUCTIONS}\n\n<resume_text>\n${input.content}\n</resume_text>`
+      );
 
-    const analyserResult = await model.withStructuredOutput(ResumeAnalysisSchema).invoke(
-      `${RESUME_REVIEW_INSTRUCTIONS}\n\n<resume_text>\n${input.content}\n</resume_text>`,
-    );
+    const analyserResult = await model
+      .withStructuredOutput(ResumeAnalysisSchema)
+      .invoke(`${RESUME_REVIEW_INSTRUCTIONS}\n\n<resume_text>\n${input.content}\n</resume_text>`);
 
     const jobDescResult = input.jobDescription
-      ? await model.withStructuredOutput(atsAnalysisSchema).invoke(
-        `${JOB_COMPARISON_INSTRUCTIONS}\n\n<resume_text>\n${input.content}\n</resume_text>\n\n<job_description>\n${input.jobDescription}\n</job_description>`,
-      )
+      ? await model
+          .withStructuredOutput(atsAnalysisSchema)
+          .invoke(
+            `${JOB_COMPARISON_INSTRUCTIONS}\n\n<resume_text>\n${input.content}\n</resume_text>\n\n<job_description>\n${input.jobDescription}\n</job_description>`
+          )
       : null;
 
     const analysis = { resumeResult, analyserResult, jobDescResult };
     const savedResume = await prisma.resume.create({
       data: {
-        title: resumeResult.name?.trim() || "Untitled resume",
+        title: resumeResult.name?.trim() || 'Untitled resume',
         content: input.content,
         analysis,
         userId: session.user.id,
@@ -121,8 +129,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true, resumeId: savedResume.id, ...analysis });
   } catch {
     return NextResponse.json(
-      { error: "We couldn’t analyze your resume right now. Please try again." },
-      { status: 502 },
+      { error: 'We couldn’t analyze your resume right now. Please try again.' },
+      { status: 502 }
     );
   }
 }

@@ -1,5 +1,5 @@
-import { DashboardLayout } from "@/app/components/dashboard/DashboardLayout";
+import { DashboardLayout } from '@/app/components/dashboard/DashboardLayout';
 
-export default function Layout({ children }: LayoutProps<"/">) {
+export default function Layout({ children }: LayoutProps<'/'>) {
   return <DashboardLayout>{children}</DashboardLayout>;
 }

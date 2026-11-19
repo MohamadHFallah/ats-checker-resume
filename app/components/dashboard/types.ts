@@ -1,5 +1,5 @@
-import type { ATSResponse } from "@/app/components/ATSCheckerCom";
-import type { ATSJobDescriptionResult } from "@/app/components/atsJob";
+import type { ATSResponse } from '@/app/components/ATSCheckerCom';
+import type { ATSJobDescriptionResult } from '@/app/components/atsJob';
 
 export type SavedResume = {
   id: string;

@@ -25,7 +25,7 @@ export const atsAnalysisSchema = z.object({
 
   recommendations: z.array(
     z.object({
-      priority: z.enum(["high", "medium", "low"]),
+      priority: z.enum(['high', 'medium', 'low']),
       title: z.string(),
       description: z.string(),
     })

@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { createContext, useContext, useEffect, useState } from "react";
-import { FileText } from "lucide-react";
+import { createContext, useContext, useEffect, useState } from 'react';
+import { FileText } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -13,8 +13,8 @@ import {
   SidebarMenuItem,
   SidebarProvider,
   SidebarTrigger,
-} from "@/components/ui/sidebar";
-import type { SavedResume } from "./types";
+} from '@/components/ui/sidebar';
+import type { SavedResume } from './types';
 
 type DashboardContextValue = {
   resumes: SavedResume[];
@@ -30,11 +30,15 @@ const DashboardContext = createContext<DashboardContextValue | null>(null);
 
 export function useDashboard() {
   const context = useContext(DashboardContext);
-  if (!context) throw new Error("useDashboard must be used within DashboardLayout.");
+  if (!context) throw new Error('useDashboard must be used within DashboardLayout.');
   return context;
 }
 
-export function DashboardSidebar({ resumes, selected, onSelect }: {
+export function DashboardSidebar({
+  resumes,
+  selected,
+  onSelect,
+}: {
   resumes: SavedResume[];
   selected: SavedResume | null;
   onSelect: (resume: SavedResume) => void;
@@ -74,37 +78,42 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     let active = true;
     async function loadResumes() {
       try {
-        const response = await fetch("/api/resumes");
+        const response = await fetch('/api/resumes');
         if (!active) return;
         if (response.status === 401) {
-          setError("Sign in to view your saved resumes.");
+          setError('Sign in to view your saved resumes.');
           return;
         }
         if (!response.ok) {
-          const data = await response.json().catch(() => null) as { error?: string } | null;
-          throw new Error(data?.error ?? "Your resumes couldn’t be loaded. Please try again.");
+          const data = (await response.json().catch(() => null)) as { error?: string } | null;
+          throw new Error(data?.error ?? 'Your resumes couldn’t be loaded. Please try again.');
         }
         const data: { resumes: SavedResume[] } = await response.json();
         if (!active) return;
         setResumes(data.resumes);
-        const requestedId = new URLSearchParams(window.location.search).get("resume");
-        setSelected(data.resumes.find((resume) => resume.id === requestedId) ?? data.resumes[0] ?? null);
+        const requestedId = new URLSearchParams(window.location.search).get('resume');
+        setSelected(
+          data.resumes.find((resume) => resume.id === requestedId) ?? data.resumes[0] ?? null
+        );
       } catch (loadError) {
-        if (active) setError(loadError instanceof Error ? loadError.message : "Something went wrong.");
+        if (active)
+          setError(loadError instanceof Error ? loadError.message : 'Something went wrong.');
       } finally {
         if (active) setLoading(false);
       }
     }
     void loadResumes();
-    return () => { active = false; };
+    return () => {
+      active = false;
+    };
   }, []);
 
   function selectResume(resume: SavedResume) {
     setSelected(resume);
     const url = new URL(window.location.href);
-    url.searchParams.set("resume", resume.id);
-    url.searchParams.delete("comparison");
-    window.history.replaceState(null, "", url);
+    url.searchParams.set('resume', resume.id);
+    url.searchParams.delete('comparison');
+    window.history.replaceState(null, '', url);
   }
 
   return (
@@ -115,23 +124,35 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           <div className="sticky top-0 z-20 flex h-14 items-center border-b border-border bg-background px-4">
             <SidebarTrigger aria-label="Toggle saved resumes sidebar" />
           </div>
-          <DashboardContext.Provider value={{
-            resumes,
-            selected,
-            loading,
-            error,
-            selectResume,
-            setResumes,
-            setSelected,
-          }}>
+          <DashboardContext.Provider
+            value={{
+              resumes,
+              selected,
+              loading,
+              error,
+              selectResume,
+              setResumes,
+              setSelected,
+            }}
+          >
             {loading ? (
               <main className="flex min-h-[60vh] items-center justify-center">
-                <p role="status" className="text-sm text-muted-foreground">Loading your dashboard…</p>
+                <p role="status" className="text-sm text-muted-foreground">
+                  Loading your dashboard…
+                </p>
               </main>
             ) : error ? (
               <main className="p-6">
-                <div role="alert" className="rounded-md border border-danger-200 bg-danger-50 px-4 py-3 text-sm text-danger-800">{error}</div></main>
-            ) : children}
+                <div
+                  role="alert"
+                  className="rounded-md border border-danger-200 bg-danger-50 px-4 py-3 text-sm text-danger-800"
+                >
+                  {error}
+                </div>
+              </main>
+            ) : (
+              children
+            )}
           </DashboardContext.Provider>
         </div>
       </SidebarInset>

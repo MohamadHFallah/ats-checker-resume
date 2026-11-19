@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { ATSJobDescriptionResult } from "./atsJob";
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
+import { ATSJobDescriptionResult } from './atsJob';
 
 type AtsIssue = {
   issue: string;
-  severity: "low" | "medium" | "high";
+  severity: 'low' | 'medium' | 'high';
   explanation: string;
 };
 
@@ -207,18 +207,10 @@ type AnalyzerResult = {
 //   ],
 // };
 
-function SectionHeader({
-  title,
-  count,
-}: {
-  title: string;
-  count?: number;
-}) {
+function SectionHeader({ title, count }: { title: string; count?: number }) {
   return (
     <div className="mb-5 flex items-center justify-between">
-      <h2 className="text-base font-semibold tracking-tight text-foreground sm:text-lg">
-        {title}
-      </h2>
+      <h2 className="text-base font-semibold tracking-tight text-foreground sm:text-lg">{title}</h2>
 
       {count !== undefined && (
         <Badge variant="secondary" className="bg-muted text-muted-foreground">
@@ -237,33 +229,23 @@ function ScoreCard({ score }: { score: number }) {
       <CardContent className="flex h-full flex-col items-center justify-center px-6 py-8">
         <div className="relative flex size-36 items-center justify-center rounded-full border-[10px] border-green-100 sm:size-40">
           <div className="text-center">
-            <div className="text-5xl font-bold tracking-tight text-foreground">
-              {score}
-            </div>
+            <div className="text-5xl font-bold tracking-tight text-foreground">{score}</div>
 
-            <div className="text-xs font-medium text-muted-foreground">
-              OUT OF 10
-            </div>
+            <div className="text-xs font-medium text-muted-foreground">OUT OF 10</div>
           </div>
         </div>
 
         <div className="mt-5 flex items-center gap-2">
           <span className="size-2 rounded-full bg-green-500" />
 
-          <span className="text-sm font-semibold text-green-600">
-            Strong Resume
-          </span>
+          <span className="text-sm font-semibold text-green-600">Strong Resume</span>
         </div>
 
         <p className="mt-2 max-w-xs text-center text-sm leading-6 text-muted-foreground">
-          Your resume has a strong ATS structure with a few areas
-          that can be improved.
+          Your resume has a strong ATS structure with a few areas that can be improved.
         </p>
 
-        <Progress
-          value={percentage}
-          className="mt-6 w-full max-w-xs"
-        />
+        <Progress value={percentage} className="mt-6 w-full max-w-xs" />
       </CardContent>
     </Card>
   );
@@ -285,13 +267,9 @@ function OverviewCard({ analyserResult }) {
             </div>
 
             <div>
-              <h3 className="text-sm font-semibold">
-                Strengths
-              </h3>
+              <h3 className="text-sm font-semibold">Strengths</h3>
 
-              <p className="text-xs text-muted-foreground">
-                What your resume does well
-              </p>
+              <p className="text-xs text-muted-foreground">What your resume does well</p>
             </div>
           </div>
 
@@ -315,13 +293,9 @@ function OverviewCard({ analyserResult }) {
             </div>
 
             <div>
-              <h3 className="text-sm font-semibold">
-                Weaknesses
-              </h3>
+              <h3 className="text-sm font-semibold">Weaknesses</h3>
 
-              <p className="text-xs text-muted-foreground">
-                Areas that need attention
-              </p>
+              <p className="text-xs text-muted-foreground">Areas that need attention</p>
             </div>
           </div>
 
@@ -343,18 +317,15 @@ function OverviewCard({ analyserResult }) {
 
 function AtsIssues({ analyserResult }) {
   const severityColor = {
-    high: "destructive",
-    medium: "warning",
-    low: "secondary"
+    high: 'destructive',
+    medium: 'warning',
+    low: 'secondary',
   };
 
   return (
     <Card className="border shadow-sm">
       <CardHeader className="px-6 pb-2 pt-6">
-        <SectionHeader
-          title="ATS Issues"
-          count={analyserResult.atsIssues.length}
-        />
+        <SectionHeader title="ATS Issues" count={analyserResult.atsIssues.length} />
       </CardHeader>
 
       <CardContent className="space-y-3">
@@ -370,26 +341,22 @@ function AtsIssues({ analyserResult }) {
 
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
-                  <h3 className="text-sm font-semibold text-foreground">
-                    {item.issue}
-                  </h3>
+                  <h3 className="text-sm font-semibold text-foreground">{item.issue}</h3>
 
                   <Badge
                     variant={
-                      item.severity === "high"
-                        ? "destructive"
-                        : item.severity === "medium"
-                          ? "default"
-                          : "secondary"
+                      item.severity === 'high'
+                        ? 'destructive'
+                        : item.severity === 'medium'
+                          ? 'default'
+                          : 'secondary'
                     }
                   >
                     {item.severity}
                   </Badge>
                 </div>
 
-                <p className="mt-1.5 text-sm leading-6 text-muted-foreground">
-                  {item.explanation}
-                </p>
+                <p className="mt-1.5 text-sm leading-6 text-muted-foreground">{item.explanation}</p>
               </div>
             </div>
           </div>
@@ -417,17 +384,13 @@ function Suggestions({ analyserResult }) {
           >
             <div className="flex gap-3">
               <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-xs font-semibold text-primary">
-                {String(index + 1).padStart(2, "0")}
+                {String(index + 1).padStart(2, '0')}
               </div>
 
               <div>
-                <h3 className="text-sm font-semibold">
-                  {item.title}
-                </h3>
+                <h3 className="text-sm font-semibold">{item.title}</h3>
 
-                <p className="mt-1.5 text-sm leading-6 text-muted-foreground">
-                  {item.explanation}
-                </p>
+                <p className="mt-1.5 text-sm leading-6 text-muted-foreground">{item.explanation}</p>
               </div>
             </div>
           </div>
@@ -440,10 +403,7 @@ function Suggestions({ analyserResult }) {
 function Skills({ resumeResult }) {
   return (
     <div>
-      <SectionHeader
-        title="Skills"
-        count={resumeResult.skills.length}
-      />
+      <SectionHeader title="Skills" count={resumeResult.skills.length} />
 
       <div className="flex flex-wrap gap-2">
         {resumeResult.skills.map((skill) => (
@@ -463,10 +423,7 @@ function Skills({ resumeResult }) {
 function Experience({ resumeResult }) {
   return (
     <div>
-      <SectionHeader
-        title="Experience"
-        count={resumeResult.experience.length}
-      />
+      <SectionHeader title="Experience" count={resumeResult.experience.length} />
 
       <div className="space-y-8">
         {resumeResult.experience.map((experience, index) => (
@@ -485,15 +442,10 @@ function Experience({ resumeResult }) {
                       {experience.position}
                     </h3>
 
-                    <p className="mt-1 text-sm font-medium text-primary">
-                      {experience.company}
-                    </p>
+                    <p className="mt-1 text-sm font-medium text-primary">{experience.company}</p>
                   </div>
 
-                  <Badge
-                    variant="secondary"
-                    className="self-start bg-muted text-muted-foreground"
-                  >
+                  <Badge variant="secondary" className="self-start bg-muted text-muted-foreground">
                     {experience.startDate} - {experience.endDate}
                   </Badge>
                 </div>
@@ -504,11 +456,7 @@ function Experience({ resumeResult }) {
 
                 <div className="mt-4 flex flex-wrap gap-1.5">
                   {experience.technologies.map((technology) => (
-                    <Badge
-                      key={technology}
-                      variant="secondary"
-                      className="text-xs"
-                    >
+                    <Badge key={technology} variant="secondary" className="text-xs">
                       {technology}
                     </Badge>
                   ))}
@@ -525,30 +473,18 @@ function Experience({ resumeResult }) {
 function Education({ resumeResult }) {
   return (
     <div>
-      <SectionHeader
-        title="Education"
-        count={resumeResult.education.length}
-      />
+      <SectionHeader title="Education" count={resumeResult.education.length} />
 
       <div className="space-y-3">
         {resumeResult.education.map((education, index) => (
-          <div
-            key={index}
-            className="rounded-xl border bg-muted/20 p-5"
-          >
+          <div key={index} className="rounded-xl border bg-muted/20 p-5">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div>
-                <h3 className="font-semibold">
-                  {education.degree}
-                </h3>
+                <h3 className="font-semibold">{education.degree}</h3>
 
-                <p className="mt-1 text-sm font-medium text-primary">
-                  {education.institution}
-                </p>
+                <p className="mt-1 text-sm font-medium text-primary">{education.institution}</p>
 
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {education.field}
-                </p>
+                <p className="mt-1 text-sm text-muted-foreground">{education.field}</p>
               </div>
 
               <span className="text-xs text-muted-foreground">
@@ -566,7 +502,7 @@ export type ATSResponse = {
   success: boolean;
   resumeResult: ResumeResult;
   analyserResult: AnalyzerResult;
-  jobDescResult: ATSJobDescriptionResult
+  jobDescResult: ATSJobDescriptionResult;
 };
 
 export function ATSChecker({ resumeResult, analyserResult }: Omit<ATSResponse, 'jobDescription'>) {
@@ -576,19 +512,14 @@ export function ATSChecker({ resumeResult, analyserResult }: Omit<ATSResponse, '
       <header className="sticky top-0 z-30 border-b bg-background/90 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <div>
-            <h1 className="text-base font-bold tracking-tight sm:text-lg">
-              ATS Resume Checker
-            </h1>
+            <h1 className="text-base font-bold tracking-tight sm:text-lg">ATS Resume Checker</h1>
 
             <p className="hidden text-xs text-muted-foreground sm:block">
               Analyze and improve your resume
             </p>
           </div>
 
-          <Button
-            size="sm"
-            className="font-medium shadow-sm"
-          >
+          <Button size="sm" className="font-medium shadow-sm">
             Analyze New Resume
           </Button>
         </div>
@@ -613,16 +544,12 @@ export function ATSChecker({ resumeResult, analyserResult }: Omit<ATSResponse, '
                   Full Stack JavaScript Developer
                 </p>
 
-                <p className="mt-1 text-xs text-muted-foreground">
-                  {resumeResult.phone}
-                </p>
+                <p className="mt-1 text-xs text-muted-foreground">{resumeResult.phone}</p>
               </div>
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground">
-                Overall Score
-              </span>
+              <span className="text-xs text-muted-foreground">Overall Score</span>
 
               <Badge className="font-semibold bg-green-500 hover:bg-green-600">
                 {analyserResult.overallScore}/10
@@ -654,9 +581,7 @@ export function ATSChecker({ resumeResult, analyserResult }: Omit<ATSResponse, '
         <Card className="mt-6 border shadow-sm">
           <CardHeader className="px-5 pb-2 pt-6 sm:px-6">
             <div>
-              <h2 className="text-lg font-semibold tracking-tight">
-                Parsed Resume
-              </h2>
+              <h2 className="text-lg font-semibold tracking-tight">Parsed Resume</h2>
 
               <p className="mt-1 text-sm text-muted-foreground">
                 Resume content extracted by the analyzer
@@ -707,13 +632,11 @@ export function ATSChecker({ resumeResult, analyserResult }: Omit<ATSResponse, '
                     +
                   </div>
 
-                  <h3 className="mt-3 text-sm font-semibold">
-                    No projects found
-                  </h3>
+                  <h3 className="mt-3 text-sm font-semibold">No projects found</h3>
 
                   <p className="mx-auto mt-1 max-w-md text-sm leading-6 text-muted-foreground">
-                    Adding relevant projects could improve the
-                    visibility of your technical experience.
+                    Adding relevant projects could improve the visibility of your technical
+                    experience.
                   </p>
                 </div>
               ) : null}

@@ -1,26 +1,28 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import Link from "next/link";
-import { ArrowRight, FileText, Plus } from "lucide-react";
-import { ATSChecker } from "@/app/components/ATSCheckerCom";
-import { useSearchParams } from "next/navigation";
-import { useDashboard } from "@/app/components/dashboard/DashboardLayout";
-import { SavedComparison } from "@/app/components/dashboard/types";
-import { JobComparisonWorkspace } from "@/app/components/dashboard/JobComparisonWorkspace";
-import { ComparisonDialog } from "@/app/components/dashboard/ComparisonDialog";
-
+import { useState } from 'react';
+import Link from 'next/link';
+import { ArrowRight, FileText, Plus } from 'lucide-react';
+import { ATSChecker } from '@/app/components/ATSCheckerCom';
+import { useSearchParams } from 'next/navigation';
+import { useDashboard } from '@/app/components/dashboard/DashboardLayout';
+import { SavedComparison } from '@/app/components/dashboard/types';
+import { JobComparisonWorkspace } from '@/app/components/dashboard/JobComparisonWorkspace';
+import { ComparisonDialog } from '@/app/components/dashboard/ComparisonDialog';
 
 export default function DashboardPage() {
   const searchParams = useSearchParams();
   const { resumes, selected, setResumes } = useDashboard();
   const [selectedComparison, setSelectedComparison] = useState<SavedComparison | null>(null);
-  const [jobDescription, setJobDescription] = useState("");
+  const [jobDescription, setJobDescription] = useState('');
   const [comparisonError, setComparisonError] = useState<string | null>(null);
   const [isComparing, setIsComparing] = useState(false);
 
-  const requestedComparison = searchParams.get("comparison");
-  const activeComparison = selectedComparison ?? selected?.comparisons.find((comparison) => comparison.id === requestedComparison) ?? null;
+  const requestedComparison = searchParams.get('comparison');
+  const activeComparison =
+    selectedComparison ??
+    selected?.comparisons.find((comparison) => comparison.id === requestedComparison) ??
+    null;
 
   async function compareJobDescription(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -29,22 +31,28 @@ export default function DashboardPage() {
     setIsComparing(true);
     try {
       const response = await fetch(`/api/resumes/${selected.id}/comparisons`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ jobDescription }),
       });
-      const data = await response.json() as { error?: string; comparison?: SavedComparison };
+      const data = (await response.json()) as { error?: string; comparison?: SavedComparison };
       if (!response.ok || !data.comparison) {
-        throw new Error(data.error ?? "This job description couldn’t be compared.");
+        throw new Error(data.error ?? 'This job description couldn’t be compared.');
       }
       const comparison = data.comparison;
       setSelectedComparison(comparison);
-      setJobDescription("");
-      setResumes((current) => current.map((resume) => resume.id === selected.id
-        ? { ...resume, comparisons: [comparison, ...resume.comparisons] }
-        : resume));
+      setJobDescription('');
+      setResumes((current) =>
+        current.map((resume) =>
+          resume.id === selected.id
+            ? { ...resume, comparisons: [comparison, ...resume.comparisons] }
+            : resume
+        )
+      );
     } catch (compareError) {
-      setComparisonError(compareError instanceof Error ? compareError.message : "Something went wrong.");
+      setComparisonError(
+        compareError instanceof Error ? compareError.message : 'Something went wrong.'
+      );
     } finally {
       setIsComparing(false);
     }
@@ -56,9 +64,14 @@ export default function DashboardPage() {
         <div>
           <p className="text-sm font-medium text-primary">Your workspace</p>
           <h1 className="mt-1 text-3xl sm:text-4xl">ATS Resume Checker</h1>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">Analyze and improve your resume, then compare it with a job.</p>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+            Analyze and improve your resume, then compare it with a job.
+          </p>
         </div>
-        <Link href="/" className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:w-auto">
+        <Link
+          href="/"
+          className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:w-auto"
+        >
           <Plus aria-hidden="true" className="size-4" /> Add a resume
         </Link>
       </header>
@@ -70,7 +83,10 @@ export default function DashboardPage() {
           <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-muted-foreground">
             Add your resume to get a review. Your saved analysis will appear here.
           </p>
-          <Link href="/" className="mt-5 inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+          <Link
+            href="/"
+            className="mt-5 inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
             Analyze a resume <ArrowRight aria-hidden="true" className="size-4" />
           </Link>
         </section>
@@ -105,7 +121,12 @@ export default function DashboardPage() {
         </div>
       )}
 
-      <ComparisonDialog comparison={activeComparison} onOpenChange={(open) => { if (!open) setSelectedComparison(null); }} />
+      <ComparisonDialog
+        comparison={activeComparison}
+        onOpenChange={(open) => {
+          if (!open) setSelectedComparison(null);
+        }}
+      />
     </main>
   );
 }

@@ -1,12 +1,16 @@
-import { ChatOpenAI } from "@langchain/openai";
-import { NextResponse } from "next/server";
-import { z } from "zod";
-import prisma from "@/lib/prisma";
-import { atsAnalysisSchema } from "@/lib/ai/atsAnalysisSchema";
-import { requireApiAuth } from "@/lib/auth/getApiSession";
+import { ChatOpenAI } from '@langchain/openai';
+import { NextResponse } from 'next/server';
+import { z } from 'zod';
+import prisma from '@/lib/prisma';
+import { atsAnalysisSchema } from '@/lib/ai/atsAnalysisSchema';
+import { requireApiAuth } from '@/lib/auth/getApiSession';
 
 const requestSchema = z.object({
-  jobDescription: z.string().trim().min(80, "Add at least 80 characters from the job description.").max(20_000),
+  jobDescription: z
+    .string()
+    .trim()
+    .min(80, 'Add at least 80 characters from the job description.')
+    .max(20_000),
   title: z.string().trim().max(160).optional(),
 });
 
@@ -33,14 +37,14 @@ ATS-focused comparison:
 
 Return only data matching the structured-output schema.`;
 
-const model = new ChatOpenAI({ model: "gpt-4.1-mini", timeout: 45_000 });
+const model = new ChatOpenAI({ model: 'gpt-4.1-mini', timeout: 45_000 });
 
 type RouteContext = { params: Promise<{ resumeId: string }> };
 
 export async function POST(request: Request, { params }: RouteContext) {
   const session = await requireApiAuth();
   if (!session) {
-    return NextResponse.json({ error: "Sign in to compare a job description." }, { status: 401 });
+    return NextResponse.json({ error: 'Sign in to compare a job description.' }, { status: 401 });
   }
 
   const { resumeId } = await params;
@@ -48,9 +52,10 @@ export async function POST(request: Request, { params }: RouteContext) {
   try {
     input = requestSchema.parse(await request.json());
   } catch (error) {
-    const message = error instanceof z.ZodError
-      ? error.issues[0]?.message ?? "Check the job description and try again."
-      : "The request body must be valid JSON.";
+    const message =
+      error instanceof z.ZodError
+        ? (error.issues[0]?.message ?? 'Check the job description and try again.')
+        : 'The request body must be valid JSON.';
     return NextResponse.json({ error: message }, { status: 400 });
   }
 
@@ -59,15 +64,24 @@ export async function POST(request: Request, { params }: RouteContext) {
     select: { id: true, title: true, content: true },
   });
   if (!resume) {
-    return NextResponse.json({ error: "That saved resume could not be found." }, { status: 404 });
+    return NextResponse.json({ error: 'That saved resume could not be found.' }, { status: 404 });
   }
 
   try {
-    const analysis = await model.withStructuredOutput(atsAnalysisSchema).invoke(
-      `${comparisonInstructions}\n\n<resume_text>\n${resume.content}\n</resume_text>\n\n<job_description>\n${input.jobDescription}\n</job_description>`,
-    );
+    const analysis = await model
+      .withStructuredOutput(atsAnalysisSchema)
+      .invoke(
+        `${comparisonInstructions}\n\n<resume_text>\n${resume.content}\n</resume_text>\n\n<job_description>\n${input.jobDescription}\n</job_description>`
+      );
 
-    const title = input.title || input.jobDescription.split(/\r?\n/).find((line) => line.trim())?.trim().slice(0, 160) || "Job comparison";
+    const title =
+      input.title ||
+      input.jobDescription
+        .split(/\r?\n/)
+        .find((line) => line.trim())
+        ?.trim()
+        .slice(0, 160) ||
+      'Job comparison';
     const comparison = await prisma.jobComparison.create({
       data: { title, description: input.jobDescription, analysis, resumeId: resume.id },
       select: { id: true, title: true, createdAt: true, analysis: true },
@@ -75,6 +89,9 @@ export async function POST(request: Request, { params }: RouteContext) {
 
     return NextResponse.json({ success: true, comparison });
   } catch {
-    return NextResponse.json({ error: "We couldn’t compare this job description right now. Please try again." }, { status: 502 });
+    return NextResponse.json(
+      { error: 'We couldn’t compare this job description right now. Please try again.' },
+      { status: 502 }
+    );
   }
 }

@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { ArrowRight, FileText, LoaderCircle, LockKeyhole } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { ArrowRight, FileText, LoaderCircle, LockKeyhole } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const MAX_CHARACTERS = 20_000;
 
 export function HeroSection() {
   const router = useRouter();
-  const [resumeText, setResumeText] = useState("");
+  const [resumeText, setResumeText] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
@@ -18,21 +18,23 @@ export function HeroSection() {
     setError(null);
 
     if (resumeText.trim().length < 100) {
-      setError("Add at least 100 characters of resume text to continue.");
+      setError('Add at least 100 characters of resume text to continue.');
       return;
     }
 
     setIsAnalyzing(true);
     try {
-      const response = await fetch("/api/ats/analyze", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const response = await fetch('/api/ats/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ content: resumeText }),
       });
 
       if (!response.ok) {
-        const responseBody = await response.json().catch(() => null) as { error?: string } | null;
-        throw new Error(responseBody?.error ?? "We couldn’t analyze your resume. Check your text and try again.");
+        const responseBody = (await response.json().catch(() => null)) as { error?: string } | null;
+        throw new Error(
+          responseBody?.error ?? 'We couldn’t analyze your resume. Check your text and try again.'
+        );
       }
 
       const result = await response.json();
@@ -41,7 +43,7 @@ export function HeroSection() {
       setError(
         analysisError instanceof Error
           ? analysisError.message
-          : "Something went wrong. Please try again.",
+          : 'Something went wrong. Please try again.'
       );
       setIsAnalyzing(false);
     }
@@ -54,7 +56,8 @@ export function HeroSection() {
           Resume compatibility checker
         </h1>
         <p className="mt-4 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
-          Paste your resume to get a structured review of its clarity, experience, and skills. Your analysis is saved to your dashboard.
+          Paste your resume to get a structured review of its clarity, experience, and skills. Your
+          analysis is saved to your dashboard.
         </p>
       </div>
 
@@ -62,7 +65,9 @@ export function HeroSection() {
         <div className="grid gap-5">
           <div className="min-w-0">
             <div className="mb-2 flex items-baseline justify-between gap-3">
-              <label htmlFor="resume" className="text-sm font-medium">Your resume</label>
+              <label htmlFor="resume" className="text-sm font-medium">
+                Your resume
+              </label>
               <span className="text-xs tabular-nums text-muted-foreground">
                 {resumeText.length.toLocaleString()} / {MAX_CHARACTERS.toLocaleString()}
               </span>
@@ -81,11 +86,13 @@ export function HeroSection() {
               Plain text works best. Include your experience, skills, and education.
             </p>
           </div>
-
         </div>
 
         {error && (
-          <p role="alert" className="mt-5 rounded-md border border-danger-200 bg-danger-50 px-4 py-3 text-sm text-danger-800">
+          <p
+            role="alert"
+            className="mt-5 rounded-md border border-danger-200 bg-danger-50 px-4 py-3 text-sm text-danger-800"
+          >
             {error}
           </p>
         )}
@@ -93,9 +100,14 @@ export function HeroSection() {
         <div className="mt-6 flex flex-col gap-4 border-t border-border pt-5 sm:flex-row sm:items-center sm:justify-between">
           <p className="flex items-start gap-2 text-xs leading-5 text-muted-foreground">
             <LockKeyhole aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
-            Your text is sent to an external AI provider for analysis. Avoid including sensitive details.
+            Your text is sent to an external AI provider for analysis. Avoid including sensitive
+            details.
           </p>
-          <Button type="submit" disabled={isAnalyzing} className="min-h-11 w-full shrink-0 sm:w-auto">
+          <Button
+            type="submit"
+            disabled={isAnalyzing}
+            className="min-h-11 w-full shrink-0 sm:w-auto"
+          >
             {isAnalyzing ? (
               <>
                 <LoaderCircle aria-hidden="true" className="size-4 animate-spin" />
@@ -119,7 +131,8 @@ export function HeroSection() {
 
       <div className="mt-12 border-t border-border pt-5">
         <p className="max-w-3xl text-sm leading-6 text-muted-foreground">
-          The compatibility score is an estimate to help guide your review. It is not an official ATS score and does not guarantee an interview.
+          The compatibility score is an estimate to help guide your review. It is not an official
+          ATS score and does not guarantee an interview.
         </p>
       </div>
     </section>

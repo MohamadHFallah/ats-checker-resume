@@ -1,16 +1,15 @@
+'use client';
 
-'use client'
-
-import { useState } from 'react'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { Menu, X, Sparkles } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { authClient, useSession } from '../../lib/auth-client'
+import { useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { Menu, X, Sparkles } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { authClient, useSession } from '../../lib/auth-client';
 
 export function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const router = useRouter()
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const router = useRouter();
   const { data: session } = useSession();
 
   const navItems = [
@@ -18,12 +17,15 @@ export function Header() {
     { label: 'Magic Editor', href: '/editor' },
     { label: 'Pricing', href: '/pricing' },
     { label: 'Blog', href: '/blog' },
-  ]
+  ];
 
   return (
     <header className="fixed top-0 z-50 w-full border-b border-gray-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:border-gray-800 dark:bg-gray-950/95">
       <div className="container flex h-16 items-center justify-between mx-auto">
-        <Link href="/" className="flex items-center gap-2 text-xl font-bold text-blue-600 dark:text-blue-400">
+        <Link
+          href="/"
+          className="flex items-center gap-2 text-xl font-bold text-blue-600 dark:text-blue-400"
+        >
           <Sparkles className="h-6 w-6" />
           <span>ATS Checker Resume</span>
         </Link>
@@ -41,24 +43,36 @@ export function Header() {
         </nav>
 
         <div className="hidden md:flex items-center gap-4">
-          {!session ? <Button onClick={async () => {
-            authClient.signIn.social({
-              provider: "github",
-              callbackURL: "/"
-            })
-          }}>Sign in</Button> :
+          {!session ? (
+            <Button
+              onClick={async () => {
+                authClient.signIn.social({
+                  provider: 'github',
+                  callbackURL: '/',
+                });
+              }}
+            >
+              Sign in
+            </Button>
+          ) : (
             <>
-            <Link href="/dashboard" className="text-sm font-medium text-gray-700 transition-colors hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400">
-              {session.user.name || session.user.email}
-            </Link>
-            <Button onClick={async () => {
-              await authClient.signOut({
-                fetchOptions: { onSuccess: () => router.push("/") },
-              })
-            }}>Sign out</Button>
+              <Link
+                href="/dashboard"
+                className="text-sm font-medium text-gray-700 transition-colors hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400"
+              >
+                {session.user.name || session.user.email}
+              </Link>
+              <Button
+                onClick={async () => {
+                  await authClient.signOut({
+                    fetchOptions: { onSuccess: () => router.push('/') },
+                  });
+                }}
+              >
+                Sign out
+              </Button>
             </>
-
-          }
+          )}
           {/* <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
             Get Started
           </Button> */}
@@ -88,7 +102,9 @@ export function Header() {
               </Link>
             ))}
             <div className="flex flex-col gap-2 pt-4">
-              <Button variant="outline" size="sm">Sign In</Button>
+              <Button variant="outline" size="sm">
+                Sign In
+              </Button>
               <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
                 Get Started
               </Button>
@@ -97,5 +113,5 @@ export function Header() {
         </div>
       )}
     </header>
-  )
+  );
 }
