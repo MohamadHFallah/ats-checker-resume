@@ -251,7 +251,7 @@ function ScoreCard({ score }: { score: number }) {
   );
 }
 
-function OverviewCard({ analyserResult }) {
+function OverviewCard({ analyserResult }: { analyserResult: AnalyzerResult }) {
   return (
     <Card className="border shadow-sm">
       <CardHeader className="px-6 pb-2 pt-6">
@@ -315,13 +315,7 @@ function OverviewCard({ analyserResult }) {
   );
 }
 
-function AtsIssues({ analyserResult }) {
-  const severityColor = {
-    high: 'destructive',
-    medium: 'warning',
-    low: 'secondary',
-  };
-
+function AtsIssues({ analyserResult }: { analyserResult: AnalyzerResult }) {
   return (
     <Card className="border shadow-sm">
       <CardHeader className="px-6 pb-2 pt-6">
@@ -366,7 +360,7 @@ function AtsIssues({ analyserResult }) {
   );
 }
 
-function Suggestions({ analyserResult }) {
+function Suggestions({ analyserResult }: { analyserResult: AnalyzerResult }) {
   return (
     <Card className="border shadow-sm">
       <CardHeader className="px-6 pb-2 pt-6">
@@ -400,7 +394,7 @@ function Suggestions({ analyserResult }) {
   );
 }
 
-function Skills({ resumeResult }) {
+function Skills({ resumeResult }: { resumeResult: ResumeResult }) {
   return (
     <div>
       <SectionHeader title="Skills" count={resumeResult.skills.length} />
@@ -420,7 +414,7 @@ function Skills({ resumeResult }) {
   );
 }
 
-function Experience({ resumeResult }) {
+function Experience({ resumeResult }: { resumeResult: ResumeResult }) {
   return (
     <div>
       <SectionHeader title="Experience" count={resumeResult.experience.length} />
@@ -470,7 +464,7 @@ function Experience({ resumeResult }) {
   );
 }
 
-function Education({ resumeResult }) {
+function Education({ resumeResult }: { resumeResult: ResumeResult }) {
   return (
     <div>
       <SectionHeader title="Education" count={resumeResult.education.length} />
@@ -505,7 +499,10 @@ export type ATSResponse = {
   jobDescResult: ATSJobDescriptionResult;
 };
 
-export function ATSChecker({ resumeResult, analyserResult }: Omit<ATSResponse, 'jobDescription'>) {
+export function ATSChecker({
+  resumeResult,
+  analyserResult,
+}: Pick<ATSResponse, 'resumeResult' | 'analyserResult'>) {
   return (
     <main className="min-h-screen bg-muted/30">
       {/* Header */}
