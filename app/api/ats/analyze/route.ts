@@ -5,6 +5,7 @@ import prisma from '@/lib/prisma';
 import { ResumeSchema } from '@/lib/ai/resumeSchema';
 import { ResumeAnalysisSchema } from '@/lib/ai/resumeAnalysisSchema';
 import { atsAnalysisSchema } from '@/lib/ai/atsAnalysisSchema';
+import { AI_MODEL, createAIRequestId, logAIUsage } from '@/lib/ai/usage-log';
 import { readJsonBody, rejectCrossOrigin, requireApiAuth } from '@/lib/auth/getApiSession';
 
 const inputSchema = z.object({
@@ -12,7 +13,7 @@ const inputSchema = z.object({
   jobDescription: z.string().trim().min(80).max(20_000).optional(),
 });
 
-const model = new ChatOpenAI({ model: 'gpt-4.1-mini', timeout: 45_000 });
+const model = new ChatOpenAI({ model: AI_MODEL, timeout: 45_000 });
 
 const RESUME_EXTRACTION_INSTRUCTIONS = `You extract resume information into a fixed schema for a resume review product.
 
@@ -102,26 +103,41 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: message }, { status: 400 });
   }
 
+  const requestId = createAIRequestId();
+  const usage = [];
+  let requestSucceeded = false;
   try {
-    const resumeResult = await model
+    const resumeResponse = await model
       .withStructuredOutput(ResumeSchema, {
-        includeRaw: true
+        includeRaw: true,
       })
       .invoke(
         `${RESUME_EXTRACTION_INSTRUCTIONS}\n\n<resume_text>\n${input.content}\n</resume_text>`
       );
+    usage.push({ operation: 'resume_extraction', response: resumeResponse.raw });
+    const resumeResult = resumeResponse.parsed;
+    if (!resumeResult) throw new Error('Resume extraction returned no structured output.');
 
-    const analyserResult = await model
-      .withStructuredOutput(ResumeAnalysisSchema)
+    const analysisResponse = await model
+      .withStructuredOutput(ResumeAnalysisSchema, { includeRaw: true })
       .invoke(`${RESUME_REVIEW_INSTRUCTIONS}\n\n<resume_text>\n${input.content}\n</resume_text>`);
+    usage.push({ operation: 'resume_review', response: analysisResponse.raw });
 
-    const jobDescResult = input.jobDescription
-      ? await model
-        .withStructuredOutput(atsAnalysisSchema)
+    const analyserResult = analysisResponse.parsed;
+
+    if (!analyserResult) { throw new Error('Resume review returned no structured output.'); }
+
+    let jobDescResult = null;
+    if (input.jobDescription) {
+      const comparisonResponse = await model
+        .withStructuredOutput(atsAnalysisSchema, { includeRaw: true })
         .invoke(
           `${JOB_COMPARISON_INSTRUCTIONS}\n\n<resume_text>\n${input.content}\n</resume_text>\n\n<job_description>\n${input.jobDescription}\n</job_description>`
-        )
-      : null;
+        );
+      usage.push({ operation: 'resume_job_comparison', response: comparisonResponse.raw });
+      jobDescResult = comparisonResponse.parsed;
+      if (!jobDescResult) throw new Error('Job comparison returned no structured output.');
+    }
 
     const analysis = { resumeResult, analyserResult, jobDescResult };
     const savedResume = await prisma.resume.create({
@@ -134,11 +150,23 @@ export async function POST(request: Request) {
       select: { id: true, title: true, createdAt: true },
     });
 
+    requestSucceeded = true;
     return NextResponse.json({ success: true, resumeId: savedResume.id, ...analysis });
   } catch {
     return NextResponse.json(
       { error: 'We couldn’t analyze your resume right now. Please try again.' },
       { status: 502 }
+    );
+  } finally {
+    await Promise.all(
+      usage.map((entry) =>
+        logAIUsage({
+          userId: session.user.id,
+          requestId,
+          ...entry,
+          status: requestSucceeded ? 'success' : 'error',
+        })
+      )
     );
   }
 }

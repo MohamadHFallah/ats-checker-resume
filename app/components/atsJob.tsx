@@ -43,99 +43,7 @@ export interface ATSJobDescriptionResult {
   recommendations: Recommendation[];
 }
 
-// Sample data from the jobDescResult
-// const sampleData: ATSResult = {
-//   matchedSkills: [
-//     'TypeScript',
-//     'Node.js',
-//     'NestJS',
-//     'PostgreSQL',
-//     'Redis',
-//     'Jest',
-//     'GraphQL'
-//   ],
-//   missingSkills: [
-//     'Autoscaling',
-//     'High Availability (HA)',
-//     'Performance optimization of backend systems',
-//     'Resilience and failure modes design',
-//     'SQL schema modeling',
-//     'SQL query optimization',
-//     'AWS in production',
-//     'Kubernetes in production',
-//     'Logs, metrics, tracing in production monitoring'
-//   ],
-//   experienceMatch: {
-//     score: 7,
-//     explanation: 'Candidate has strong experience with TypeScript, Node.js, NestJS, PostgreSQL, Redis, GraphQL, and Jest in production environments. However, no explicit evidence of experience with autoscaling, high availability, resilience patterns, Kubernetes, AWS production environments, or advanced logs/metrics monitoring is found. They have worked with AWS S3 and observability tools like ClickHouse logs but no detailed production monitoring or Kubernetes experience is stated.'
-//   },
-//   educationMatch: {
-//     score: 8,
-//     explanation: "Candidate has a Master's degree in Computer Software Engineering, which is a strong relevant educational background for the role."
-//   },
-//   keywords: {
-//     matched: [
-//       'TypeScript', 'Node.js',
-//       'NestJS',     'PostgreSQL',
-//       'Redis',      'GraphQL',
-//       'Jest',       'AWS S3',
-//       'ClickHouse', 'Docker'
-//     ],
-//     missing: [
-//       'autoscaling',
-//       'high availability',
-//       'performance optimization',
-//       'resilience',
-//       'failure modes',
-//       'Kubernetes',
-//       'production monitoring',
-//       'logs',
-//       'metrics',
-//       'tracing'
-//     ]
-//   },
-//   strengths: [
-//     '10+ years of experience as Full Stack JavaScript Developer',
-//     'Strong backend skills with Node.js, TypeScript, NestJS',
-//     'Experience building and maintaining large-scale backend systems',
-//     'Proficient with PostgreSQL and Redis',
-//     'Experience with GraphQL and API design',
-//     'Worked on observability and logging integration',
-//     'Skilled in frontend technologies (React.js, Next.js) enhancing full-stack capabilities',
-//     'Master’s degree in Computer Software Engineering'
-//   ],
-//   weaknesses: [
-//     'No explicit experience with autoscaling and high availability backend system design was mentioned',
-//     'Lack of evidence for working with Kubernetes in production',
-//     'Limited visibility into advanced production monitoring tools for logs, metrics, tracing',
-//     'No specific mention of SQL schema modeling and query optimization best practices',
-//     'Experience with AWS limited to S3; no evidence of broader AWS production environment exposure'
-//   ],
-//   recommendations: [
-//     {
-//       priority: 'high',
-//       title: 'Gain experience with autoscaling and high availability backend design',
-//       description: 'Focus on developing and demonstrating experience in designing backend systems that handle autoscaling, high availability, resilience and failure modes to meet job requirements.'
-//     },
-//     {
-//       priority: 'high',
-//       title: 'Acquire practical Kubernetes and AWS production experience',
-//       description: 'Seek opportunities to work with Kubernetes orchestration and AWS production environments to fulfill explicit job expectations.'
-//     },
-//     {
-//       priority: 'medium',
-//       title: 'Enhance skills in SQL schema design and query optimization',
-//       description: 'Deepen PostgreSQL skills by focusing on schema modeling best practices and query optimization techniques.'
-//     },
-//     {
-//       priority: 'medium',
-//       title: 'Improve skills in production monitoring tools',
-//       description: 'Develop proficiency with logs, metrics, and tracing tools to monitor and debug production systems effectively.'
-//     }
-//   ]
-// };
 
-// Utility function to get priority badge color
 const getPriorityBadge = (priority: string) => {
   switch (priority) {
     case 'high':
@@ -149,7 +57,6 @@ const getPriorityBadge = (priority: string) => {
   }
 };
 
-// Main Component
 export const ATSJobDescriptionResult: FC<{ data: ATSJobDescriptionResult }> = ({ data }) => {
   const {
     matchedSkills,

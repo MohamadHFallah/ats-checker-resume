@@ -522,6 +522,8 @@ export function ATSChecker({
   resumeResult,
   analyserResult,
 }: Pick<ATSResponse, 'resumeResult' | 'analyserResult'>) {
+  console.log('analyserResult ',analyserResult);
+  
   return (
     <main className="min-h-screen">
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
@@ -548,8 +550,8 @@ export function ATSChecker({
             <div className="flex items-center gap-2">
               <span className="text-xs text-muted-foreground">Overall Score</span>
 
-              <Badge className="font-semibold bg-green-500 hover:bg-green-600">
-                {analyserResult.overallScore}/10
+              <Badge variant={"outline"}>
+                {analyserResult.overallScore} of 100
               </Badge>
             </div>
           </CardContent>

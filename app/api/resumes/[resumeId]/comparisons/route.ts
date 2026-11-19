@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import prisma from '@/lib/prisma';
 import { atsAnalysisSchema } from '@/lib/ai/atsAnalysisSchema';
+import { AI_MODEL, createAIRequestId, logAIUsage } from '@/lib/ai/usage-log';
 import { readJsonBody, rejectCrossOrigin, requireApiAuth } from '@/lib/auth/getApiSession';
 
 const requestSchema = z.object({
@@ -37,7 +38,7 @@ ATS-focused comparison:
 
 Return only data matching the structured-output schema.`;
 
-const model = new ChatOpenAI({ model: 'gpt-4.1-mini', timeout: 45_000 });
+const model = new ChatOpenAI({ model: AI_MODEL, timeout: 45_000 });
 
 type RouteContext = { params: Promise<{ resumeId: string }> };
 
@@ -73,12 +74,18 @@ export async function POST(request: Request, { params }: RouteContext) {
     return NextResponse.json({ error: 'That saved resume could not be found.' }, { status: 404 });
   }
 
+  const requestId = createAIRequestId();
+  let usageResponse;
+  let requestSucceeded = false;
   try {
-    const analysis = await model
-      .withStructuredOutput(atsAnalysisSchema)
+    const response = await model
+      .withStructuredOutput(atsAnalysisSchema, { includeRaw: true })
       .invoke(
         `${comparisonInstructions}\n\n<resume_text>\n${resume.content}\n</resume_text>\n\n<job_description>\n${input.jobDescription}\n</job_description>`
       );
+    usageResponse = response.raw;
+    const analysis = response.parsed;
+    if (!analysis) throw new Error('Job comparison returned no structured output.');
 
     const title =
       input.title ||
@@ -93,11 +100,20 @@ export async function POST(request: Request, { params }: RouteContext) {
       select: { id: true, title: true, createdAt: true, analysis: true },
     });
 
+    requestSucceeded = true;
     return NextResponse.json({ success: true, comparison });
   } catch {
     return NextResponse.json(
       { error: 'We couldn’t compare this job description right now. Please try again.' },
       { status: 502 }
     );
+  } finally {
+    await logAIUsage({
+      userId: session.user.id,
+      requestId,
+      operation: 'saved_resume_job_comparison',
+      response: usageResponse,
+      status: requestSucceeded ? 'success' : 'error',
+    });
   }
 }
