@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ATSJobDescriptionResult } from "@/app/components/atsJob";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import type { SavedComparison } from "../../dashboard/components/types";
+import type { SavedComparison } from "./types";
 
 const INTRO_SEEN_KEY = "ats-checker-comparison-intro-seen";
 
@@ -12,18 +12,17 @@ type ComparisonDialogProps = {
 
 export function ComparisonDialog({ comparison, onOpenChange }: ComparisonDialogProps) {
   const [introDismissed, setIntroDismissed] = useState(false);
-  let showIntro = false;
-  // if (comparison && !introDismissed) {
-  //   try {
-  //     showIntro = window.localStorage.getItem(INTRO_SEEN_KEY) !== "true";
-  //   } catch {
-  //     showIntro = false;
-  //   }
-  // }
+  const showIntro = comparison !== null && !introDismissed && (() => {
+    try {
+      return window.localStorage.getItem(INTRO_SEEN_KEY) !== "true";
+    } catch {
+      return false;
+    }
+  })();
 
   return (
     <Dialog open={comparison !== null} onOpenChange={(open) => { if (!open) onOpenChange(false); }}>
-      {false ?(
+      {showIntro ? (
         <DialogContent>
           <DialogHeader>
             <DialogTitle>About your job comparison</DialogTitle>
