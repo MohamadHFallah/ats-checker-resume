@@ -6,9 +6,10 @@ import { ArrowRight, FileText, Plus } from "lucide-react";
 import { ATSChecker } from "@/app/components/ATSCheckerCom";
 import { useSearchParams } from "next/navigation";
 import { useDashboard } from "@/app/components/dashboard/DashboardLayout";
-import { ComparisonDialog } from "../components/dashboard/ComparisonDialog";
-import { JobComparisonWorkspace } from "../components/dashboard/JobComparisonWorkspace";
-import type { SavedComparison } from "../components/dashboard/types";
+import { SavedComparison } from "@/app/components/dashboard/types";
+import { JobComparisonWorkspace } from "@/app/components/dashboard/JobComparisonWorkspace";
+import { ComparisonDialog } from "@/app/components/dashboard/ComparisonDialog";
+
 
 export default function DashboardPage() {
   const searchParams = useSearchParams();

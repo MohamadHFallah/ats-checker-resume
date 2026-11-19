@@ -2,10 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Figtree } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import { auth } from "../lib/auth";
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
-import { Header } from "./components/Header";
 import { Footer } from "./components/Footer";
 
 const figtree = Figtree({ subsets: ['latin'], variable: '--font-sans' });
@@ -27,16 +23,13 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
 
-
   return (
     <html
       lang="en"
       className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, "font-sans", figtree.variable)}
     >
       <body className="min-h-full flex flex-col">
-        <Header />
         {children}
-        <Footer />
       </body>
     </html>
   );
