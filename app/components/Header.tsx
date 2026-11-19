@@ -3,13 +3,14 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { Menu, X, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { authClient, useSession } from '../../lib/auth-client'
-import { signOut } from 'better-auth/api'
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const router = useRouter()
   const { data: session } = useSession();
 
   const navItems = [
@@ -47,8 +48,14 @@ export function Header() {
             })
           }}>Sign in</Button> :
             <>
-             <p>{session.user.name}</p>
-            <Button onClick={() => signOut()}>Sign out</Button>
+            <Link href="/dashboard" className="text-sm font-medium text-gray-700 transition-colors hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400">
+              {session.user.name || session.user.email}
+            </Link>
+            <Button onClick={async () => {
+              await authClient.signOut({
+                fetchOptions: { onSuccess: () => router.push("/") },
+              })
+            }}>Sign out</Button>
             </>
 
           }
