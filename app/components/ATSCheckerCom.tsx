@@ -365,7 +365,7 @@ function Suggestions({ analyserResult }: { analyserResult: AnalyzerResult }) {
     <Card>
       <CardHeader className="px-6 pb-2 pt-6">
         <SectionHeader
-          title="Recommended Improvements1"
+          title="Recommended Improvements"
           count={analyserResult.suggestions.length}
         />
       </CardHeader>
