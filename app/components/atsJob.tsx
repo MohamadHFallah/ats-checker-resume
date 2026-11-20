@@ -1,4 +1,4 @@
-import  { FC } from 'react';
+import { FC } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -42,7 +42,6 @@ export interface ATSJobDescriptionResult {
   weaknesses: string[];
   recommendations: Recommendation[];
 }
-
 
 const getPriorityBadge = (priority: string) => {
   switch (priority) {

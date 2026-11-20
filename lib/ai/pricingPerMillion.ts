@@ -1,4 +1,4 @@
-import { OpenAIChatModelId } from "@langchain/openai";
+import { OpenAIChatModelId } from '@langchain/openai';
 
 export const pricingPerMillion: Record<OpenAIChatModelId, { input: number; output: number }> = {
   // GPT-5.6 family
@@ -50,11 +50,11 @@ export const pricingPerMillion: Record<OpenAIChatModelId, { input: number; outpu
   // O-series
   'o4-mini': { input: 1.1, output: 4.4 },
   'o4-mini-2025-04-16': { input: 1.1, output: 4.4 },
-  'o3': { input: 2, output: 8 },
+  o3: { input: 2, output: 8 },
   'o3-2025-04-16': { input: 2, output: 8 },
   'o3-mini': { input: 1.1, output: 4.4 },
   'o3-mini-2025-01-31': { input: 1.1, output: 4.4 },
-  'o1': { input: 15, output: 60 },
+  o1: { input: 15, output: 60 },
   'o1-2024-12-17': { input: 15, output: 60 },
   'o1-preview': { input: 15, output: 60 },
   'o1-preview-2024-09-12': { input: 15, output: 60 },

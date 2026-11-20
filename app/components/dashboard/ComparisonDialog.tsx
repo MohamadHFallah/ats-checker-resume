@@ -65,7 +65,9 @@ export function ComparisonDialog({ comparison, onOpenChange }: ComparisonDialogP
         comparison && (
           <DialogContent className="max-h-[90dvh] max-w-5xl gap-0 overflow-y-auto rounded-none p-0 sm:max-w-5xl">
             <DialogHeader className="px-5 py-4 text-left">
-              <DialogTitle className="font-bold text-2xl">{comparison.title.substring(0,30)}</DialogTitle>
+              <DialogTitle className="font-bold text-2xl">
+                {comparison.title.substring(0, 30)}
+              </DialogTitle>
               <DialogDescription>
                 Compared on {new Date(comparison.createdAt).toLocaleDateString()}
               </DialogDescription>

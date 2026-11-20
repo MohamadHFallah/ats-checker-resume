@@ -2,10 +2,16 @@ import { ChatOpenAI } from '@langchain/openai';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import prisma from '@/lib/prisma';
-import { ResumeSchema } from '@/lib/ai/resumeSchema';
-import { ResumeAnalysisSchema } from '@/lib/ai/resumeAnalysisSchema';
-import { atsAnalysisSchema } from '@/lib/ai/atsAnalysisSchema';
+import { ResumeSchema } from '@/lib/ai/schemas/resumeSchema';
+import { ResumeAnalysisSchema } from '@/lib/ai/schemas/resumeAnalysisSchema';
+import { atsAnalysisSchema } from '@/lib/ai/schemas/atsAnalysisSchema';
 import { AI_MODEL, createAIRequestId, logAIUsage } from '@/lib/ai/usage-log';
+import { calculateCredits } from '@/lib/ai/plan/calculateCredits';
+import {
+  InsufficientCreditsError,
+  reserveCredits,
+  refundCredits,
+} from '@/lib/ai/plan/reserveCredits';
 import { readJsonBody, rejectCrossOrigin, requireApiAuth } from '@/lib/auth/getApiSession';
 
 const inputSchema = z.object({
@@ -104,6 +110,21 @@ export async function POST(request: Request) {
   }
 
   const requestId = createAIRequestId();
+  const creditsUsed =
+    calculateCredits('RESUME_ANALYSIS', AI_MODEL) +
+    (input.jobDescription ? calculateCredits('JOB_MATCHING', AI_MODEL) : 0);
+  try {
+    await reserveCredits(session.user.id, creditsUsed);
+  } catch (error) {
+    if (error instanceof InsufficientCreditsError) {
+      return NextResponse.json({ error: 'Insufficient credits. Please change your Plan' }, { status: 403 });
+    }
+    return NextResponse.json(
+      { error: 'Unable to verify your credits. Please try again.' },
+      { status: 500 }
+    );
+  }
+
   const usage = [];
   let requestSucceeded = false;
   try {
@@ -125,7 +146,9 @@ export async function POST(request: Request) {
 
     const analyserResult = analysisResponse.parsed;
 
-    if (!analyserResult) { throw new Error('Resume review returned no structured output.'); }
+    if (!analyserResult) {
+      throw new Error('Resume review returned no structured output.');
+    }
 
     let jobDescResult = null;
     if (input.jobDescription) {
@@ -158,6 +181,7 @@ export async function POST(request: Request) {
       { status: 502 }
     );
   } finally {
+    if (!requestSucceeded) await refundCredits(session.user.id, creditsUsed).catch(() => undefined);
     await Promise.all(
       usage.map((entry) =>
         logAIUsage({
@@ -165,6 +189,7 @@ export async function POST(request: Request) {
           requestId,
           ...entry,
           status: requestSucceeded ? 'success' : 'error',
+          creditsUsed,
         })
       )
     );

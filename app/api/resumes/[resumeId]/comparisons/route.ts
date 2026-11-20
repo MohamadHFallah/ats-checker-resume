@@ -2,8 +2,14 @@ import { ChatOpenAI } from '@langchain/openai';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import prisma from '@/lib/prisma';
-import { atsAnalysisSchema } from '@/lib/ai/atsAnalysisSchema';
+import { atsAnalysisSchema } from '@/lib/ai/schemas/atsAnalysisSchema';
 import { AI_MODEL, createAIRequestId, logAIUsage } from '@/lib/ai/usage-log';
+import { calculateCredits } from '@/lib/ai/plan/calculateCredits';
+import {
+  InsufficientCreditsError,
+  reserveCredits,
+  refundCredits,
+} from '@/lib/ai/plan/reserveCredits';
 import { readJsonBody, rejectCrossOrigin, requireApiAuth } from '@/lib/auth/getApiSession';
 
 const requestSchema = z.object({
@@ -75,6 +81,19 @@ export async function POST(request: Request, { params }: RouteContext) {
   }
 
   const requestId = createAIRequestId();
+  const creditsUsed = calculateCredits('JOB_MATCHING', AI_MODEL);
+  try {
+    await reserveCredits(session.user.id, creditsUsed);
+  } catch (error) {
+    if (error instanceof InsufficientCreditsError) {
+      return NextResponse.json({ error: 'Insufficient credits. Please change your Plan' }, { status: 403 });
+    }
+    return NextResponse.json(
+      { error: 'Unable to verify your credits. Please try again.' },
+      { status: 500 }
+    );
+  }
+
   let usageResponse;
   let requestSucceeded = false;
   try {
@@ -108,12 +127,14 @@ export async function POST(request: Request, { params }: RouteContext) {
       { status: 502 }
     );
   } finally {
+    if (!requestSucceeded) await refundCredits(session.user.id, creditsUsed).catch(() => undefined);
     await logAIUsage({
       userId: session.user.id,
       requestId,
       operation: 'saved_resume_job_comparison',
       response: usageResponse,
       status: requestSucceeded ? 'success' : 'error',
+      creditsUsed,
     });
   }
 }

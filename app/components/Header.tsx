@@ -63,7 +63,7 @@ export function Header() {
               <Button
                 onClick={async () => {
                   await authClient.signOut({
-                    fetchOptions: { onSuccess: () => router.push('/') },
+                    fetchOptions: { keepalive: false, onSuccess: () => router.push('/') },
                   });
                 }}
               >

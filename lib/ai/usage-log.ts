@@ -16,12 +16,14 @@ export async function logAIUsage({
   operation,
   response,
   status,
+  creditsUsed = 0,
 }: {
   userId: string;
   requestId: string;
   operation: string;
   response?: unknown;
   status: 'success' | 'error';
+  creditsUsed?: number;
 }) {
   const usageMetadata = response instanceof AIMessage ? response.usage_metadata : undefined;
   const inputTokens =
@@ -48,6 +50,7 @@ export async function logAIUsage({
         inputCost,
         outputCost,
         totalCost: inputCost + outputCost,
+        creditsUsed,
         status,
       },
     });

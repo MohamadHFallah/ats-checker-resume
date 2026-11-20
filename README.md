@@ -8,6 +8,7 @@ An AI-powered resume review and job-comparison app. Paste resume text to receive
 - Compares a saved resume against a job description and presents matched skills, missing or unconfirmed requirements, keywords, and recommendations.
 - Uses LangChain structured output with Zod schemas and stores resumes and comparisons for authenticated users.
 - Includes a dashboard with saved resumes, comparison history, and light/dark theme selection.
+- Tracks Free/Pro plans and deducts AI credits before analysis and comparison requests.
 
 ## Requirements
 
@@ -68,6 +69,8 @@ An AI-powered resume review and job-comparison app. Paste resume text to receive
 4. Review the resume analysis and job comparison from the dashboard.
 
 Only plain text is supported; PDF/DOCX upload and parsing are not currently included.
+
+New accounts receive 100 credits on the Free plan. Credits are reserved before an AI request and refunded if analysis fails. Update the default in `prisma/schema.prisma` and the migration if the Free allowance should differ. Plan upgrades and recurring credit resets are not yet implemented.
 
 ## Scripts
 

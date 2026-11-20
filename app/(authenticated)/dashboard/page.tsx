@@ -95,7 +95,6 @@ export default function DashboardPage() {
           <section aria-label="Selected resume analysis" className="min-w-0">
             {selected?.analysis ? (
               <ATSChecker {...selected.analysis} />
-
             ) : (
               <p className="rounded-md border border-border bg-card p-5 text-sm text-muted-foreground">
                 No analysis is saved for this resume yet.

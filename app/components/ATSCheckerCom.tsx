@@ -227,19 +227,19 @@ function ScoreCard({ score }: { score: number }) {
       ? { label: 'Needs work', color: 'text-red-600', border: 'border-red-500', dot: 'bg-red-500' }
       : percentage <= 50
         ? {
-          label: 'Fair',
-          color: 'text-yellow-600',
-          border: 'border-yellow-500',
-          dot: 'bg-yellow-500',
-        }
+            label: 'Fair',
+            color: 'text-yellow-600',
+            border: 'border-yellow-500',
+            dot: 'bg-yellow-500',
+          }
         : percentage <= 75
           ? { label: 'Good', color: 'text-blue-600', border: 'border-blue-500', dot: 'bg-blue-500' }
           : {
-            label: 'Strong',
-            color: 'text-green-600',
-            border: 'border-green-500',
-            dot: 'bg-green-500',
-          };
+              label: 'Strong',
+              color: 'text-green-600',
+              border: 'border-green-500',
+              dot: 'bg-green-500',
+            };
 
   return (
     <Card className="px-6 pb-2 pt-6">
@@ -522,8 +522,8 @@ export function ATSChecker({
   resumeResult,
   analyserResult,
 }: Pick<ATSResponse, 'resumeResult' | 'analyserResult'>) {
-  console.log('analyserResult ',analyserResult);
-  
+  console.log('analyserResult ', analyserResult);
+
   return (
     <main className="min-h-screen">
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
@@ -550,9 +550,7 @@ export function ATSChecker({
             <div className="flex items-center gap-2">
               <span className="text-xs text-muted-foreground">Overall Score</span>
 
-              <Badge variant={"outline"}>
-                {analyserResult.overallScore} of 100
-              </Badge>
+              <Badge variant={'outline'}>{analyserResult.overallScore} of 100</Badge>
             </div>
           </CardContent>
         </Card>

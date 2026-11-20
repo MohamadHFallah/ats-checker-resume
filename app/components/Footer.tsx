@@ -1,15 +1,11 @@
 import { Github, GithubIcon, LinkedinIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { Sparkles, X, Mail, } from 'lucide-react';
+import { Sparkles, X, Mail } from 'lucide-react';
 import Link from 'next/link';
 
 const footerLinks = {
-  product: [
-    { label: 'Pricing', href: '/pricing' },
-  ],
-  company: [
-    { label: 'Contact', href: '/contact' },
-  ],
+  product: [{ label: 'Pricing', href: '/pricing' }],
+  company: [{ label: 'Contact', href: '/contact' }],
 };
 
 export function Footer() {
@@ -32,10 +28,16 @@ export function Footer() {
               {/* <a href="#" className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
                 <X className="h-5 w-5" />
               </a> */}
-              <a href="https://www.linkedin.com/in/mohamad-hassan-fallah" className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-               <HugeiconsIcon icon={LinkedinIcon} />
+              <a
+                href="https://www.linkedin.com/in/mohamad-hassan-fallah"
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              >
+                <HugeiconsIcon icon={LinkedinIcon} />
               </a>
-              <a href="https://github.com/MohamadHFallah" className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+              <a
+                href="https://github.com/MohamadHFallah"
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              >
                 <HugeiconsIcon icon={GithubIcon} />
               </a>
               {/* <a href="#" className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
@@ -75,15 +77,13 @@ export function Footer() {
               ))}
             </ul>
           </div>
-
-
         </div>
 
         <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-800 text-sm text-gray-500 dark:text-gray-400 text-center">
           <p>
             © 2026 ATSFriendly.com. All rights reserved. Made with
-            <b className="animate-pulse py-1 text-xl">❤️</b> by <b>AI Automate</b> for job
-            seekers everywhere.
+            <b className="animate-pulse py-1 text-xl">❤️</b> by <b>AI Automate</b> for job seekers
+            everywhere.
           </p>
         </div>
       </div>
