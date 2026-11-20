@@ -51,7 +51,7 @@ export function DashboardSidebar({
     <Sidebar collapsible="icon">
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Saved resumes</SidebarGroupLabel>
+          <SidebarGroupLabel>Saved Resumes</SidebarGroupLabel>
           <SidebarMenu>
             {resumes.map((resume) => (
               <SidebarMenuItem key={resume.id}>
@@ -128,10 +128,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
   function selectResume(resume: SavedResume) {
     setSelected(resume);
-    const url = new URL(window.location.href);
-    url.searchParams.set('resume', resume.id);
-    url.searchParams.delete('comparison');
-    window.history.replaceState(null, '', url);
+    router.push(`/dashboard?resume=${encodeURIComponent(resume.id)}`, { scroll: false });
   }
 
   return (

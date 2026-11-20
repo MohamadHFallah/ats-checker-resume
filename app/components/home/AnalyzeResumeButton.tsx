@@ -13,12 +13,12 @@ type AnalyzeResumeButtonProps = {
 export function AnalyzeResumeButton({ signedIn, className, children }: AnalyzeResumeButtonProps) {
   return (
     <Link
-      href={signedIn ? '/dashboard/new' : '/'}
+      href={signedIn ? '/new' : '/'}
       className={className}
       onClick={(event) => {
         if (!signedIn) {
           event.preventDefault();
-          void authClient.signIn.social({ provider: 'github', callbackURL: '/dashboard/new' });
+          void authClient.signIn.social({ provider: 'github', callbackURL: '/new' });
         }
       }}
     >
