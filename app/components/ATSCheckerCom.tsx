@@ -522,7 +522,6 @@ export function ATSChecker({
   resumeResult,
   analyserResult,
 }: Pick<ATSResponse, 'resumeResult' | 'analyserResult'>) {
-  console.log('analyserResult ', analyserResult);
 
   return (
     <main className="min-h-screen">

@@ -21,7 +21,7 @@ export function ResumeSidebar({
       className={`min-w-0 border-b border-border pb-5 lg:border-b-0 lg:border-r lg:pb-0 ${isOpen ? 'lg:pr-5' : 'lg:pr-2'}`}
     >
       <div className={`mb-3 flex items-center ${isOpen ? 'justify-between' : 'justify-center'}`}>
-        {isOpen && <h2 className="text-sm font-medium">Saved resumes</h2>}
+        {isOpen && <h2 className="text-sm font-medium">Saved Resumes</h2>}
         <button
           type="button"
           onClick={onToggle}
