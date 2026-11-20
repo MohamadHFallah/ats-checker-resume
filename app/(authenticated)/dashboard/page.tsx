@@ -69,7 +69,7 @@ export default function DashboardPage() {
           </p>
         </div>
         <Link
-          href="/"
+          href="/dashboard/new"
           className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:w-auto"
         >
           <Plus aria-hidden="true" className="size-4" /> Add a Resume
