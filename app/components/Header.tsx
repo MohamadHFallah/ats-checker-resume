@@ -1,16 +1,29 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Menu, X, Sparkles } from 'lucide-react';
+import { Menu, X, Sparkles, Sun, Moon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { authClient, useSession } from '../../lib/auth-client';
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(
+    () => typeof window === 'undefined' || localStorage.getItem('theme') !== 'light'
+  );
   const router = useRouter();
   const { data: session } = useSession();
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', isDarkMode);
+  }, [isDarkMode]);
+
+  function toggleTheme() {
+    const darkMode = !isDarkMode;
+    setIsDarkMode(darkMode);
+    localStorage.setItem('theme', darkMode ? 'dark' : 'light');
+  }
 
   const navItems = [
     { label: 'Plans', href: '/plans' },
@@ -18,7 +31,7 @@ export function Header() {
   ];
 
   return (
-    <header className="fixed top-0 z-50 w-full border-b border-gray-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:border-gray-800 dark:bg-gray-950/95">
+    <header className="fixed top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
       <div className="container flex h-16 items-center justify-between mx-auto">
         <Link
           href="/"
@@ -41,6 +54,18 @@ export function Header() {
         </nav>
 
         <div className="hidden md:flex items-center gap-4">
+          <button
+            type="button"
+            onClick={toggleTheme}
+            aria-label={`Switch to ${isDarkMode ? 'light' : 'dark'} theme`}
+            className="inline-flex size-10 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            {isDarkMode ? (
+              <Sun aria-hidden="true" size={18} />
+            ) : (
+              <Moon aria-hidden="true" size={18} />
+            )}
+          </button>
           {!session ? (
             <Button
               onClick={async () => {
@@ -87,8 +112,16 @@ export function Header() {
 
       {/* Mobile menu */}
       {isMenuOpen && (
-        <div className="md:hidden border-t border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-950">
+        <div className="md:hidden border-t border-border bg-background p-4">
           <nav className="flex flex-col gap-3">
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="flex min-h-11 items-center gap-2 text-left text-sm font-medium text-foreground"
+            >
+              {isDarkMode ? <Sun size={17} /> : <Moon size={17} />}
+              Switch to {isDarkMode ? 'light' : 'dark'} theme
+            </button>
             {navItems.map((item) => (
               <Link
                 key={item.label}
