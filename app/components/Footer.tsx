@@ -4,7 +4,7 @@ import { Sparkles, X, Mail } from 'lucide-react';
 import Link from 'next/link';
 
 const footerLinks = {
-  product: [{ label: 'Pricing', href: '/pricing' }],
+  product: [{ label: 'Plans', href: '/Plans' }],
   company: [{ label: 'Contact', href: '/contact' }],
 };
 

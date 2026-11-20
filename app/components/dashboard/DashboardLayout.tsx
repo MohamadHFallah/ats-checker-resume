@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from 'react';
 import Link from 'next/link';
-import { FileText, Moon, Sparkles, Sun } from 'lucide-react';
+import { FileText, Moon, Sparkles, Sun, WalletCards } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Sidebar,
@@ -148,6 +148,13 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
               </Link>
             </div>
             <div className="flex items-center gap-2">
+              <Link
+                href="/plans"
+                className="inline-flex min-h-9 items-center justify-center gap-2 rounded-md px-3 text-sm font-medium hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <WalletCards aria-hidden="true" className="size-4" />
+                <span>Plans</span>
+              </Link>
               <Button
                 variant="ghost"
                 size="icon"

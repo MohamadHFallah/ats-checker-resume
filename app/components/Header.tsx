@@ -13,7 +13,7 @@ export function Header() {
   const { data: session } = useSession();
 
   const navItems = [
-    { label: 'Pricing', href: '/pricing' },
+    { label: 'Plans', href: '/plans' },
     { label: 'Blog', href: '/blog' },
   ];
 
