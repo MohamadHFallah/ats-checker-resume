@@ -92,8 +92,8 @@ The container serves the Next.js app on port 3000 and expects PostgreSQL to be a
 ## Using the app
 
 1. Sign in with GitHub.
-2. Submit plain-text resume content. Resume input must contain at least 100 characters and can be up to 20,000 characters.
-3. Optionally provide a job description during analysis (80–20,000 characters), or open a saved resume in the dashboard and compare it with a job description later.
+2. Submit plain-text resume content. Resume input must contain at least 100 characters and can be up to 5000 characters.
+3. Optionally provide a job description during analysis (5000 characters), or open a saved resume in the dashboard and compare it with a job description later.
 4. Review the resume analysis and job comparison from the dashboard.
 
 Only plain text is supported; PDF/DOCX upload and parsing are not currently included.
@@ -117,6 +117,8 @@ New accounts receive 5 credits on the Free plan. Resume analysis costs 2 credits
 ## Privacy and security notes
 
 Resume and job-description text is sent to the configured OpenAI-compatible model provider for analysis and saved in the configured PostgreSQL database for signed-in users. When Langfuse is enabled, LangChain traces may also include model inputs and outputs; review your Langfuse project's data retention and access controls before processing real personal data. Treat this information as sensitive, use trusted providers and databases, and restrict access to API credentials.
+
+Analysis inputs are Unicode-normalized, length-validated, and treated as untrusted data in separate model message roles. The app has lightweight pattern detection for common prompt-injection attempts, but detection is not a security boundary: suspicious text is still analyzed under the hardened prompt. Structured model results are runtime-validated with strict Zod schemas before storage or response. These controls reduce risk but cannot guarantee that an LLM will always resist prompt injection or provide factually correct analysis.
 
 This repository is an MVP, not a security certification. Before public deployment, configure production OAuth origins/secrets, add shared rate limiting and abuse monitoring at the hosting or gateway layer, and define retention/deletion controls. Do not log or share real resume text in issue reports.
 

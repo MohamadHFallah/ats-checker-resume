@@ -41,7 +41,7 @@ export function JobComparisonWorkspace({
             <textarea
               id="job-description"
               value={jobDescription}
-              onChange={(event) => onJobDescriptionChange(event.target.value.slice(0, 20_000))}
+              onChange={(event) => onJobDescriptionChange(event.target.value.slice(0, 5000))}
               maxLength={5000}
               rows={6}
               placeholder="Paste the job description here…"
