@@ -9,7 +9,7 @@ export class InsufficientCreditsError extends Error {
 
 export async function reserveCredits(userId: string, credits: number) {
   if (process.env.NODE_ENV === 'development') {
-    return
+    return;
   }
   if (!Number.isInteger(credits) || credits < 1) {
     throw new Error('Credits must be a positive integer.');
@@ -27,7 +27,7 @@ export async function reserveCredits(userId: string, credits: number) {
 
 export async function refundCredits(userId: string, credits: number) {
   if (process.env.NODE_ENV === 'development') {
-    return
+    return;
   }
   await prisma.user.update({
     where: { id: userId },

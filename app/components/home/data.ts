@@ -1,10 +1,4 @@
-
-
-import {
-  ScanLine,
-  Sparkles,
-  Target,
-} from 'lucide-react';
+import { ScanLine, Sparkles, Target } from 'lucide-react';
 
 export const steps = [
   {

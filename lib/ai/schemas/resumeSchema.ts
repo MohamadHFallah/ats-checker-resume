@@ -1,4 +1,4 @@
-import z, { email } from 'zod';
+import z from 'zod';
 
 export const ResumeSchema = z.object({
   name: z.string().describe('name of user'),

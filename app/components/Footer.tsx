@@ -1,6 +1,6 @@
-import { Github, GithubIcon, LinkedinIcon } from '@hugeicons/core-free-icons';
+import { GithubIcon, LinkedinIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { Sparkles, X, Mail } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import Link from 'next/link';
 
 const telegramId = process.env.NEXT_PUBLIC_TELEGRAM_ID?.replace(/^@/, '').trim();
@@ -84,8 +84,7 @@ export function Footer() {
         <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-800 text-sm text-gray-500 dark:text-gray-400 text-center">
           <p>
             © 2026 ats.ai-automate.ir All rights reserved. Made with
-            <b className="animate-pulse py-1 text-xl">❤️</b> for job seekers
-            everywhere.
+            <b className="animate-pulse py-1 text-xl">❤️</b> for job seekers everywhere.
           </p>
         </div>
       </div>
