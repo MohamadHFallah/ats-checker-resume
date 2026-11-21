@@ -42,7 +42,7 @@ export function JobComparisonWorkspace({
               id="job-description"
               value={jobDescription}
               onChange={(event) => onJobDescriptionChange(event.target.value.slice(0, 20_000))}
-              maxLength={20_000}
+              maxLength={5000}
               rows={6}
               placeholder="Paste the job description here…"
               className="min-h-36 w-full resize-y rounded-md border border-input bg-card px-4 py-3 text-sm leading-6 placeholder:text-muted-foreground/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"

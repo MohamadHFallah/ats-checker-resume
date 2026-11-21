@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { ArrowRight, FileText, LoaderCircle, LockKeyhole } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-const MAX_CHARACTERS = 20_000;
+const MAX_CHARACTERS = 5000;
 
 export function HeroSection() {
   const router = useRouter();
@@ -77,7 +77,7 @@ export function HeroSection() {
               value={resumeText}
               onChange={(event) => setResumeText(event.target.value.slice(0, MAX_CHARACTERS))}
               maxLength={MAX_CHARACTERS}
-              rows={14}
+              rows={10}
               placeholder="Paste your resume text here…"
               aria-describedby="resume-help"
               className="min-h-64 w-full resize-y rounded-md border border-input bg-card px-4 py-3 text-sm leading-6 placeholder:text-muted-foreground/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
