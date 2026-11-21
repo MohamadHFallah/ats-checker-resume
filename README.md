@@ -69,6 +69,24 @@ An AI-powered resume review and job-comparison app. Paste resume text to receive
 
    Open [http://localhost:3000](http://localhost:3000).
 
+## Docker
+
+Build and run the production image (pass the required environment variables through your deployment platform):
+
+```bash
+docker build -t at-checker .
+docker run --rm -p 3000:3000 \
+  -e DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/at_checker?schema=public" \
+  -e OPENAI_API_KEY="your-openai-api-key" \
+  -e BETTER_AUTH_SECRET="your-long-random-secret" \
+  -e BETTER_AUTH_URL="http://localhost:3000" \
+  -e GITHUB_CLIENT_ID="your-github-oauth-client-id" \
+  -e GITHUB_CLIENT_SECRET="your-github-oauth-client-secret" \
+  at-checker
+```
+
+The container serves the Next.js app on port 3000 and expects PostgreSQL to be available separately. Run database schema migrations or `prisma db push` as a separate deployment step; the container does not automatically change the database schema. Add the optional `OPENAI_BASE_URL` or Langfuse environment variables with `-e` when needed. For public deployment, set `BETTER_AUTH_URL` to the public HTTPS origin and register the matching GitHub callback URL.
+
 ## Using the app
 
 1. Sign in with GitHub.
