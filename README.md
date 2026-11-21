@@ -2,6 +2,8 @@
 
 An AI-powered resume review and job-comparison app. Paste resume text to receive a structured review, save it to your account, then compare it with job descriptions. Results are estimates for guidance—not official ATS scores, screening predictions, or guarantees of passing an ATS.
 
+Please see live project: https://ats.ai-automate.ir/
+
 ## Features
 
 - Extracts resume details and reviews structure, strengths, weaknesses, ATS-related issues, and suggested improvements.
