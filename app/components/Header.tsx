@@ -1,34 +1,24 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Menu, X, Sparkles, Sun, Moon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { authClient, useSession } from '../../lib/auth-client';
+import { useThemeSwitcher } from '@/hooks/use-theme';
+
+const navItems = [
+  { label: 'Plans', href: '/plans' },
+  { label: 'Blog', href: '/blog' },
+];
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(
-    () => typeof window === 'undefined' || localStorage.getItem('theme') !== 'light'
-  );
   const router = useRouter();
   const { data: session } = useSession();
+  const { toggleTheme, isDarkMode } = useThemeSwitcher();
 
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', isDarkMode);
-  }, [isDarkMode]);
-
-  function toggleTheme() {
-    const darkMode = !isDarkMode;
-    setIsDarkMode(darkMode);
-    localStorage.setItem('theme', darkMode ? 'dark' : 'light');
-  }
-
-  const navItems = [
-    { label: 'Plans', href: '/plans' },
-    { label: 'Blog', href: '/blog' },
-  ];
 
   return (
     <header className="fixed top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
