@@ -69,7 +69,13 @@ export default async function RootLayout({ children }: LayoutProps<'/'>) {
       )}
     >
       <head>
-        <script defer src="http://ats.ai-automate.ir/script.js" data-website-id="your-website-id" />
+        {!!process.env.WEBSITE_ID && (
+          <script
+            defer
+            src="http://ats.ai-automate.ir/script.js"
+            data-website-id={process.env.WEBSITE_ID}
+          />
+        )}
       </head>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
