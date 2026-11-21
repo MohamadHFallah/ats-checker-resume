@@ -5,6 +5,7 @@ import prisma from '@/lib/prisma';
 import { atsAnalysisSchema } from '@/lib/ai/schemas/atsAnalysisSchema';
 import { AI_MODEL, createAIRequestId, logAIUsage } from '@/lib/ai/usage-log';
 import { calculateCredits } from '@/lib/ai/plan/calculateCredits';
+import { createLangfuseCallbacks } from '@/lib/ai/langfuse';
 import {
   InsufficientCreditsError,
   reserveCredits,
@@ -81,12 +82,16 @@ export async function POST(request: Request, { params }: RouteContext) {
   }
 
   const requestId = createAIRequestId();
+  const callbacks = createLangfuseCallbacks(requestId);
   const creditsUsed = calculateCredits('JOB_MATCHING', AI_MODEL);
   try {
     await reserveCredits(session.user.id, creditsUsed);
   } catch (error) {
     if (error instanceof InsufficientCreditsError) {
-      return NextResponse.json({ error: 'Insufficient credits. Please change your Plan' }, { status: 403 });
+      return NextResponse.json(
+        { error: 'Insufficient credits. Please change your Plan' },
+        { status: 403 }
+      );
     }
     return NextResponse.json(
       { error: 'Unable to verify your credits. Please try again.' },
@@ -100,7 +105,8 @@ export async function POST(request: Request, { params }: RouteContext) {
     const response = await model
       .withStructuredOutput(atsAnalysisSchema, { includeRaw: true })
       .invoke(
-        `${comparisonInstructions}\n\n<resume_text>\n${resume.content}\n</resume_text>\n\n<job_description>\n${input.jobDescription}\n</job_description>`
+        `${comparisonInstructions}\n\n<resume_text>\n${resume.content}\n</resume_text>\n\n<job_description>\n${input.jobDescription}\n</job_description>`,
+        { callbacks }
       );
     usageResponse = response.raw;
     const analysis = response.parsed;

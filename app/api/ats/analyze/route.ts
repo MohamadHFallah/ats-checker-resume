@@ -7,6 +7,7 @@ import { ResumeAnalysisSchema } from '@/lib/ai/schemas/resumeAnalysisSchema';
 import { atsAnalysisSchema } from '@/lib/ai/schemas/atsAnalysisSchema';
 import { AI_MODEL, createAIRequestId, logAIUsage } from '@/lib/ai/usage-log';
 import { calculateCredits } from '@/lib/ai/plan/calculateCredits';
+import { createLangfuseCallbacks } from '@/lib/ai/langfuse';
 import {
   InsufficientCreditsError,
   reserveCredits,
@@ -110,6 +111,7 @@ export async function POST(request: Request) {
   }
 
   const requestId = createAIRequestId();
+  const callbacks = createLangfuseCallbacks(requestId);
   const creditsUsed =
     calculateCredits('RESUME_ANALYSIS', AI_MODEL) +
     (input.jobDescription ? calculateCredits('JOB_MATCHING', AI_MODEL) : 0);
@@ -117,7 +119,10 @@ export async function POST(request: Request) {
     await reserveCredits(session.user.id, creditsUsed);
   } catch (error) {
     if (error instanceof InsufficientCreditsError) {
-      return NextResponse.json({ error: 'Insufficient credits. Please change your Plan' }, { status: 403 });
+      return NextResponse.json(
+        { error: 'Insufficient credits. Please change your Plan' },
+        { status: 403 }
+      );
     }
     return NextResponse.json(
       { error: 'Unable to verify your credits. Please try again.' },
@@ -133,7 +138,8 @@ export async function POST(request: Request) {
         includeRaw: true,
       })
       .invoke(
-        `${RESUME_EXTRACTION_INSTRUCTIONS}\n\n<resume_text>\n${input.content}\n</resume_text>`
+        `${RESUME_EXTRACTION_INSTRUCTIONS}\n\n<resume_text>\n${input.content}\n</resume_text>`,
+        { callbacks }
       );
     usage.push({ operation: 'resume_extraction', response: resumeResponse.raw });
     const resumeResult = resumeResponse.parsed;
@@ -141,7 +147,9 @@ export async function POST(request: Request) {
 
     const analysisResponse = await model
       .withStructuredOutput(ResumeAnalysisSchema, { includeRaw: true })
-      .invoke(`${RESUME_REVIEW_INSTRUCTIONS}\n\n<resume_text>\n${input.content}\n</resume_text>`);
+      .invoke(`${RESUME_REVIEW_INSTRUCTIONS}\n\n<resume_text>\n${input.content}\n</resume_text>`, {
+        callbacks,
+      });
     usage.push({ operation: 'resume_review', response: analysisResponse.raw });
 
     const analyserResult = analysisResponse.parsed;
@@ -155,7 +163,8 @@ export async function POST(request: Request) {
       const comparisonResponse = await model
         .withStructuredOutput(atsAnalysisSchema, { includeRaw: true })
         .invoke(
-          `${JOB_COMPARISON_INSTRUCTIONS}\n\n<resume_text>\n${input.content}\n</resume_text>\n\n<job_description>\n${input.jobDescription}\n</job_description>`
+          `${JOB_COMPARISON_INSTRUCTIONS}\n\n<resume_text>\n${input.content}\n</resume_text>\n\n<job_description>\n${input.jobDescription}\n</job_description>`,
+          { callbacks }
         );
       usage.push({ operation: 'resume_job_comparison', response: comparisonResponse.raw });
       jobDescResult = comparisonResponse.parsed;
