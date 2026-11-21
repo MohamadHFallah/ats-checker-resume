@@ -1,6 +1,6 @@
 import { GithubIcon, LinkedinIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { Sparkles } from 'lucide-react';
+import { Mail, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 
 const telegramId = process.env.NEXT_PUBLIC_TELEGRAM_ID?.replace(/^@/, '').trim();
@@ -32,19 +32,25 @@ export function Footer() {
               </a> */}
               <a
                 href="https://www.linkedin.com/in/mohamad-hassan-fallah"
+                target='_blank'
                 className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
               >
                 <HugeiconsIcon icon={LinkedinIcon} />
               </a>
               <a
-                href="https://github.com/MohamadHFallah"
+                href="https://github.com/MohamadHFallah/ats-checker-resume"
+                target='_blank'
                 className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
               >
                 <HugeiconsIcon icon={GithubIcon} />
               </a>
-              {/* <a href="#" className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+              <a
+                href="mailto:fallah.dellche@gmail.com"
+                aria-label="Email fallah.dellche@gmail.com"
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              >
                 <Mail className="h-5 w-5" />
-              </a> */}
+              </a>
             </div>
           </div>
 

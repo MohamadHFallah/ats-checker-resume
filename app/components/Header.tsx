@@ -7,6 +7,8 @@ import { Menu, X, Sun, Moon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { authClient, useSession } from '../../lib/auth-client';
 import { useThemeSwitcher } from '@/hooks/use-theme';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { GithubIcon } from '@hugeicons/core-free-icons';
 
 const navItems = [
   { label: 'Plans', href: '/plans' },
@@ -43,6 +45,13 @@ export function Header() {
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
+          <a
+            href="https://github.com/MohamadHFallah/ats-checker-resume"
+            target='_blank'
+            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+          >
+            <HugeiconsIcon icon={GithubIcon} />
+          </a>
           <button
             type="button"
             onClick={toggleTheme}
@@ -130,6 +139,13 @@ export function Header() {
                 {item.label}
               </Link>
             ))}
+            <a
+              href="https://github.com/MohamadHFallah/ats-checker-resume"
+              target='_blank'
+              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+            >
+              <HugeiconsIcon icon={GithubIcon} size={10}/>
+            </a>
             {!session ? (
               <Button
                 className="mt-2 min-h-11 w-full"
