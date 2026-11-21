@@ -13,7 +13,6 @@ export const auth = betterAuth({
   // },
   plugins: [nextCookies()],
   baseURL: process.env.BETTER_AUTH_URL,
-  basePath: process.env.BETTER_AUTH_BASE_URL,
   secret: process.env.BETTER_AUTH_SECRET,
   hooks: {
     after: createAuthMiddleware(async (ctx) => {
@@ -35,7 +34,6 @@ export const auth = betterAuth({
     github: {
       clientId: process.env.GITHUB_CLIENT_ID ?? '',
       clientSecret: process.env.GITHUB_CLIENT_SECRET ?? '',
-      redirectURI: process.env.BETTER_AUTH_REDIRECT_URL_GITHUB
     },
   },
 });
