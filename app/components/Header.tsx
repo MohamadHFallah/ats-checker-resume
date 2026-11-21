@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Menu, X, Sparkles, Sun, Moon } from 'lucide-react';
+import { Menu, X, Sun, Moon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { authClient, useSession } from '../../lib/auth-client';
 import { useThemeSwitcher } from '@/hooks/use-theme';
@@ -19,36 +19,35 @@ export function Header() {
   const { data: session } = useSession();
   const { toggleTheme, isDarkMode } = useThemeSwitcher();
 
-
   return (
-    <header className="fixed top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-      <div className="container flex h-16 items-center justify-between mx-auto">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-border bg-background">
+      <div className="container mx-auto flex min-h-16 items-center justify-between gap-3 px-4 sm:px-6">
         <Link
           href="/"
-          className="flex items-center gap-2 text-xl font-bold text-blue-600 dark:text-blue-400"
+          className="min-w-0 truncate text-base font-semibold text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:text-lg"
+          onClick={() => setIsMenuOpen(false)}
         >
-          <Sparkles className="h-6 w-6" />
-          <span>ATS Checker Resume</span>
+          ATS Checker Resume
         </Link>
 
-        <nav className="hidden md:flex items-center gap-6">
+        <nav aria-label="Main navigation" className="hidden items-center gap-6 md:flex">
           {navItems.map((item) => (
             <Link
               key={item.label}
               href={item.href}
-              className="text-sm font-medium text-gray-700 transition-colors hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400"
+              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {item.label}
             </Link>
           ))}
         </nav>
 
-        <div className="hidden md:flex items-center gap-4">
+        <div className="hidden items-center gap-2 md:flex">
           <button
             type="button"
             onClick={toggleTheme}
             aria-label={`Switch to ${isDarkMode ? 'light' : 'dark'} theme`}
-            className="inline-flex size-10 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="inline-flex size-11 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             {isDarkMode ? (
               <Sun aria-hidden="true" size={18} />
@@ -71,7 +70,7 @@ export function Header() {
             <>
               <Link
                 href="/dashboard"
-                className="text-sm font-medium text-gray-700 transition-colors hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400"
+                className="max-w-48 truncate text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 {session.user.name || session.user.email}
               </Link>
@@ -86,28 +85,37 @@ export function Header() {
               </Button>
             </>
           )}
-          {/* <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
-            Get Started
-          </Button> */}
         </div>
 
         <button
-          className="md:hidden p-2"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          aria-label="Toggle menu"
+          type="button"
+          className="inline-flex size-11 shrink-0 items-center justify-center rounded-md text-foreground hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring md:hidden"
+          onClick={() => setIsMenuOpen((open) => !open)}
+          aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={isMenuOpen}
+          aria-controls="mobile-navigation"
         >
-          {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          {isMenuOpen ? (
+            <X aria-hidden="true" className="size-5" />
+          ) : (
+            <Menu aria-hidden="true" className="size-5" />
+          )}
         </button>
       </div>
 
-      {/* Mobile menu */}
       {isMenuOpen && (
-        <div className="md:hidden border-t border-border bg-background p-4">
-          <nav className="flex flex-col gap-3">
+        <div
+          id="mobile-navigation"
+          className="border-t border-border bg-background px-4 py-3 md:hidden sm:px-6"
+        >
+          <nav aria-label="Mobile navigation" className="flex flex-col gap-1">
             <button
               type="button"
-              onClick={toggleTheme}
-              className="flex min-h-11 items-center gap-2 text-left text-sm font-medium text-foreground"
+              onClick={() => {
+                toggleTheme();
+                setIsMenuOpen(false);
+              }}
+              className="flex min-h-11 items-center gap-3 rounded-md px-3 text-left text-sm font-medium text-foreground hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {isDarkMode ? <Sun size={17} /> : <Moon size={17} />}
               Switch to {isDarkMode ? 'light' : 'dark'} theme
@@ -116,20 +124,45 @@ export function Header() {
               <Link
                 key={item.label}
                 href={item.href}
-                className="text-sm font-medium text-gray-700 transition-colors hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400"
+                className="flex min-h-11 items-center rounded-md px-3 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {item.label}
               </Link>
             ))}
-            <div className="flex flex-col gap-2 pt-4">
-              <Button variant="outline" size="sm">
-                Sign In
+            {!session ? (
+              <Button
+                className="mt-2 min-h-11 w-full"
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  authClient.signIn.social({ provider: 'github', callbackURL: '/' });
+                }}
+              >
+                Sign in
               </Button>
-              <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
-                Get Started
-              </Button>
-            </div>
+            ) : (
+              <div className="mt-2 flex flex-col gap-2 border-t border-border pt-3">
+                <Link
+                  href="/dashboard"
+                  className="flex min-h-11 items-center rounded-md px-3 text-sm font-medium text-foreground hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {session.user.name || session.user.email}
+                </Link>
+                <Button
+                  className="min-h-11 w-full"
+                  variant="outline"
+                  onClick={async () => {
+                    setIsMenuOpen(false);
+                    await authClient.signOut({
+                      fetchOptions: { keepalive: false, onSuccess: () => router.push('/') },
+                    });
+                  }}
+                >
+                  Sign out
+                </Button>
+              </div>
+            )}
           </nav>
         </div>
       )}

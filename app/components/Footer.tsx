@@ -3,9 +3,11 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import { Sparkles, X, Mail } from 'lucide-react';
 import Link from 'next/link';
 
+const telegramId = process.env.NEXT_PUBLIC_TELEGRAM_ID?.replace(/^@/, '').trim();
+
 const footerLinks = {
   product: [{ label: 'Plans', href: '/Plans' }],
-  company: [{ label: 'Contact', href: '/contact' }],
+  company: [{ label: 'Contact', href: `https://t.me/${encodeURIComponent(telegramId!)}` }],
 };
 
 export function Footer() {
@@ -19,7 +21,7 @@ export function Footer() {
               className="flex items-center gap-2 text-xl font-bold text-blue-600 dark:text-blue-400 mb-4"
             >
               <Sparkles className="h-6 w-6" />
-              <span>ATSFriendly</span>
+              <span>ATS Checker Resume</span>
             </Link>
             <p className="text-sm text-gray-500 dark:text-gray-400 max-w-xs">
               AI-powered ATS resume checker and optimization platform for job seekers.
@@ -81,8 +83,8 @@ export function Footer() {
 
         <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-800 text-sm text-gray-500 dark:text-gray-400 text-center">
           <p>
-            © 2026 ATSFriendly.com. All rights reserved. Made with
-            <b className="animate-pulse py-1 text-xl">❤️</b> by <b>AI Automate</b> for job seekers
+            © 2026 ats.ai-automate.ir All rights reserved. Made with
+            <b className="animate-pulse py-1 text-xl">❤️</b> for job seekers
             everywhere.
           </p>
         </div>
