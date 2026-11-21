@@ -34,6 +34,13 @@ export default async function RootLayout({ children }: LayoutProps<'/'>) {
         figtree.variable
       )}
     >
+      <head>
+        <script
+          defer
+          src="http://ats.ai-automate.ir/script.js"
+          data-website-id="your-website-id"
+        />
+      </head>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
